@@ -120,7 +120,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
         Font font = null;
         try {
             font = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT,
-                                            new File("D:\\HANU\\Fall 2024\\JSD - Java Software Development\\BattleCity2\\Battle-City\\prstart.ttf"));
+                                            new File("prstart.ttf"));
             font = font.deriveFont(java.awt.Font.PLAIN, 15);
             GraphicsEnvironment ge
                                 = GraphicsEnvironment.getLocalGraphicsEnvironment();

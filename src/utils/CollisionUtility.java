@@ -3,16 +3,13 @@ package src.utils;
 import src.GameMain.BlockType;
 import src.GameMain.Board;
 import src.GameMain.Map;
-import src.SpriteClasses.Animation;
+import src.SpriteClasses.*;
 import src.environments.Base;
 import src.environments.Block;
-import src.SpriteClasses.Bullet;
-import src.SpriteClasses.ExplodingTank;
-import src.SpriteClasses.Explosion;
-import src.tanks.Tank;
-import src.tanks.TankAI;
-import src.SpriteClasses.TankShield;
-import java.awt.Rectangle;
+import src.tanks.NPCTank;
+import src.tanks.PlayerTank;
+
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -32,7 +29,7 @@ public class CollisionUtility {
     /**
      * Load blocks and explosion animation from the input array list
      *
-     * @param inblocks input blocks
+     * @param inblocks    input blocks
      * @param inexplosion
      */
     static public void loadCollisionUtility(ArrayList<Block> inblocks,
@@ -112,7 +109,7 @@ public class CollisionUtility {
      * Check collision between bullets and blocks
      *
      * @param bullets array list for bullets
-     * @param blocks array list for blocks
+     * @param blocks  array list for blocks
      */
     public static void checkCollisionBulletsBlocks(ArrayList<Bullet> bullets,
                                                    ArrayList<Block> blocks) {
@@ -136,22 +133,22 @@ public class CollisionUtility {
     /**
      * Check collision between bullets and the player tank
      *
-     * @param bullets array list for bullets
-     * @param tank
+     * @param bullets    array list for bullets
+     * @param playerTank
      */
     public static void checkCollisionBulletsTank(ArrayList<Bullet> bullets,
-                                                 Tank tank) {
-        Rectangle r2 = tank.getBounds();
+                                                 PlayerTank playerTank) {
+        Rectangle r2 = playerTank.getBounds();
         for (int x = 0; x < bullets.size(); x++) {
             Bullet b = bullets.get(x);
             Rectangle r1 = b.getBounds();
-            if (r1.intersects(r2) && b.isEnemy == true) {
+            if (r1.intersects(r2) && b.isEnemy) {
                 b.visible = false;
-                if (tank.shield == false) {
+                if (!playerTank.isShield()) {
                     SoundUtility.explosion1();
-                    explosions.add(new ExplodingTank(tank.x, tank.y));
-                    tank.downHealth();
-                    resetTankPosition(tank, 1);
+                    explosions.add(new ExplodingTank(playerTank.x, playerTank.y));
+                    playerTank.downHealth();
+                    resetTankPosition(playerTank, 1);
                 } else {
                     SoundUtility.BulletHitTank();
                 }
@@ -162,32 +159,32 @@ public class CollisionUtility {
     /**
      * Check collision between bullets and enemy tanks
      *
-     * @param bullets array list for bullets
-     * @param TankAIs array list for Tank AIs
+     * @param bullets  array list for bullets
+     * @param NPCTanks array list for Tank AIs
      */
     public static void checkCollisionBulletsTankAI(ArrayList<Bullet> bullets,
-                                                   ArrayList<TankAI> TankAIs) {
+                                                   ArrayList<NPCTank> NPCTanks) {
         for (int x = 0; x < bullets.size(); x++) {
             Bullet b = bullets.get(x);
             Rectangle r1 = b.getBounds();
 
-            for (int i = 0; i < TankAIs.size(); i++) {
-                TankAI tankAI = TankAIs.get(i);
-                Rectangle r2 = tankAI.getBounds();
+            for (int i = 0; i < NPCTanks.size(); i++) {
+                NPCTank NPCTank = NPCTanks.get(i);
+                Rectangle r2 = NPCTank.getBounds();
 
                 if (r1.intersects(r2) && b.isEnemy == false) {
-                    tankAI.decreaseHP();
+                    NPCTank.decreaseHP();
                     b.visible = false;
                     SoundUtility.BulletHitTank();
-                    if (tankAI.getHealth() < 1) {
-                        incrementNum(tankAI);
-                        if (tankAI.hasPowerUp()) {
-                            powerUpX = tankAI.getX();
-                            powerUpY = tankAI.getY();
+                    if (NPCTank.getHealth() < 1) {
+                        incrementNum(NPCTank);
+                        if (NPCTank.hasPowerUp()) {
+                            powerUpX = NPCTank.getX();
+                            powerUpY = NPCTank.getY();
                         }
-                        tankAI.visible = false;
+                        NPCTank.visible = false;
                         Board.decrementEnemies(1);
-                        explosions.add(new ExplodingTank(tankAI.x, tankAI.y));
+                        explosions.add(new ExplodingTank(NPCTank.x, NPCTank.y));
                         SoundUtility.explosion1();
                     }
                 }
@@ -198,10 +195,10 @@ public class CollisionUtility {
     /**
      * Increment number of the tankAI being destroyed
      *
-     * @param tankAI a given tankAI
+     * @param NPCTank a given tankAI
      */
-    public static void incrementNum(TankAI tankAI) {
-        String type = tankAI.getType();
+    public static void incrementNum(NPCTank NPCTank) {
+        String type = NPCTank.getType();
         switch (type) {
             case "basic":
                 enemyTankNum[0] += 1;
@@ -236,15 +233,15 @@ public class CollisionUtility {
      * @param atank
      * @param type
      */
-    public static void resetTankPosition(Tank atank, int type) {
+    public static void resetTankPosition(PlayerTank atank, int type) {
         atank.x = 10 * 16;
         atank.y = (Map.level0.length - 3) * 16;
-        atank.shield = true;
+        atank.setShield(true);
         explosions.add(new TankShield(atank, 2));
         if (type == 1) {
-            atank.starLevel = 0;
+            atank.setStarLevel(0);
         } else {
-            atank.shield = false;
+            atank.setShield(false);
         }
 
     }
@@ -252,24 +249,24 @@ public class CollisionUtility {
     /**
      * Check collision between the player and enemy tanks
      *
-     * @param TankAIs array list for Tank AIs
-     * @param atank the player tank
+     * @param NPCTanks array list for Tank AIs
+     * @param atank    the player tank
      */
-    public static void checkCollisionTankTankAI(ArrayList<TankAI> TankAIs,
-                                                Tank atank) {
+    public static void checkCollisionTankTankAI(ArrayList<NPCTank> NPCTanks,
+                                                PlayerTank atank) {
         Rectangle r1 = atank.getBounds();
-        for (int i = 0; i < TankAIs.size(); i++) {
-            TankAI tankAI = TankAIs.get(i);
-            Rectangle r2 = tankAI.getBounds();
+        for (int i = 0; i < NPCTanks.size(); i++) {
+            NPCTank NPCTank = NPCTanks.get(i);
+            Rectangle r2 = NPCTank.getBounds();
             if (r1.intersects(r2)) {
-                if (atank.shield == false) {
+                if (!atank.isShield()) {
                     explosions.add(new ExplodingTank(atank.x, atank.y));
                     atank.downHealth();
                     resetTankPosition(atank, 1);
-                } else if (atank.shield == true) {
-                    incrementNum(tankAI);
+                } else {
+                    incrementNum(NPCTank);
                     Board.decrementEnemies(1);
-                    tankAI.visible = false;
+                    NPCTank.visible = false;
                     explosions.add(new ExplodingTank(atank.x, atank.y));
                 }
 

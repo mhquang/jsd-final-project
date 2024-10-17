@@ -1,6 +1,6 @@
 package src.SpriteClasses;
 
-import src.tanks.Tank;
+import src.tanks.PlayerTank;
 
 /**
  * TankShield is an animation which is created when the tank becomes
@@ -16,13 +16,13 @@ import src.tanks.Tank;
  */
 public class TankShield extends Animation {
     long initialTime = System.currentTimeMillis();
-    private Tank tank;
+    private PlayerTank playerTank;
     private boolean flip = false;
     private int type;
 
-    public TankShield(Tank atank, int type) {
+    public TankShield(PlayerTank atank, int type) {
         super(atank.x, atank.y);
-        tank = atank;
+        playerTank = atank;
         loadImage("image/shield_1.png");
         getImageDimensions();
         this.type = type;
@@ -36,20 +36,20 @@ public class TankShield extends Animation {
         } else {
             shieldTime = 3000;
         }
-        super.x = tank.x;
-        super.y = tank.y;
+        super.x = playerTank.x;
+        super.y = playerTank.y;
         long timeDifference = (System.currentTimeMillis() - initialTime);
-        if (timeDifference % 10 == 0 && flip == false) {
+        if (timeDifference % 10 == 0 && !flip) {
             loadImage("image/shield_1.png");
             getImageDimensions();
             flip = true;
-        } else if (timeDifference % 10 == 0 && flip == true) {
+        } else if (timeDifference % 10 == 0 && flip) {
             loadImage("image/shield_2.png");
             getImageDimensions();
             flip = false;
         }
         if ((System.currentTimeMillis() - initialTime > shieldTime)) {
-            tank.shield = false;
+            playerTank.setShield(false);
             super.visible = false;
         }
     }

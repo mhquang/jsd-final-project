@@ -12,8 +12,8 @@ import src.environments.Edge;
 import src.powerups.PowerUp;
 import src.environments.River;
 import src.environments.Steel;
-import src.tanks.Tank;
-import src.tanks.TankAI;
+import src.tanks.PlayerTank;
+import src.tanks.NPCTank;
 import src.environments.Tree;
 import src.utils.BoardUtility;
 import src.utils.CollisionUtility;
@@ -42,9 +42,9 @@ import javax.swing.Timer;
 public class Board extends JPanel implements ActionListener {
     // Instance varaible for the timer of the tank
     private Timer timer;
-    private Tank tank;
+    private PlayerTank playerTank;
 
-    private ArrayList<TankAI> enemy = new ArrayList<>();
+    private ArrayList<NPCTank> enemy = new ArrayList<>();
     private ArrayList<Block> blocks = new ArrayList<>();
     private ArrayList<Animation> animations = new ArrayList<>();
     private ArrayList<PowerUp> powerUps = new ArrayList<>();
@@ -89,11 +89,11 @@ public class Board extends JPanel implements ActionListener {
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         numAI = 0;
-        tank = new Tank(INIT_PLAYER_X, INIT_PLAYER_Y, 4);
+        playerTank = new PlayerTank(INIT_PLAYER_X, INIT_PLAYER_Y, 4);
 
         initBlocks();
         CollisionUtility.loadCollisionUtility(blocks, animations);
-        BoardUtility.loadBoardUtility(enemy, blocks, animations, powerUps, tank);
+        BoardUtility.loadBoardUtility(enemy, blocks, animations, powerUps, playerTank);
     }
 
     /**
@@ -148,7 +148,7 @@ public class Board extends JPanel implements ActionListener {
      * the game
      */
     private void checkGameOver() {
-        if (tank.getHealth() < 0) {
+        if (playerTank.getHealth() < 0) {
             setEndGame();
         }
     }
@@ -157,19 +157,19 @@ public class Board extends JPanel implements ActionListener {
      * Draw objects on the board.
      */
     private void drawObjects(Graphics g) {
-        for (TankAI tankAI : enemy) {
-            if (tankAI.isVisible()) {
-                g.drawImage(tankAI.getImage(), tankAI.getX(), tankAI.getY(),
+        for (NPCTank NPCTank : enemy) {
+            if (NPCTank.isVisible()) {
+                g.drawImage(NPCTank.getImage(), NPCTank.getX(), NPCTank.getY(),
                             this);
             }
         }
-        if (tank.isVisible()) {
-            g.drawImage(tank.getImage(), tank.getX(), tank.getY(), this);
+        if (playerTank.isVisible()) {
+            g.drawImage(playerTank.getImage(), playerTank.getX(), playerTank.getY(), this);
         }
         ArrayList<Bullet> bullets = new ArrayList<>();
-        bullets.addAll(tank.getBullets());
-        for (TankAI tankAI : enemy) {
-            bullets.addAll(tankAI.getBullets());
+        bullets.addAll(playerTank.getBullets());
+        for (NPCTank NPCTank : enemy) {
+            bullets.addAll(NPCTank.getBullets());
         }
 
         for (Bullet b : bullets) {
@@ -205,7 +205,7 @@ public class Board extends JPanel implements ActionListener {
 
         // Draw lives
         String ipText = "IP";
-        int lives = tank.getHealth();
+        int lives = playerTank.getHealth();
         Font font = loadFont();
         g.setFont(font);
         g.drawString(ipText, initX * 16, 17 * 16);
@@ -309,7 +309,7 @@ public class Board extends JPanel implements ActionListener {
                 CollisionUtility.loadCollisionUtility(blocks, animations);
                 BoardUtility.loadBoardUtility(enemy, blocks, animations,
                                               powerUps,
-                                              tank);
+                        playerTank);
             }
         }
     }
@@ -348,17 +348,17 @@ public class Board extends JPanel implements ActionListener {
      * Updates the tank AI.
      */
     private void updateTankAI() {
-        for (TankAI tankAI : enemy) {
-            if (tankAI.isVisible()) {
-                if (System.currentTimeMillis() - tankAI.frozenStartTime > 5000 && tankAI.frozen) {
-                    tankAI.frozen = false;
+        for (NPCTank NPCTank : enemy) {
+            if (NPCTank.isVisible()) {
+                if (System.currentTimeMillis() - NPCTank.frozenStartTime > 5000 && NPCTank.frozen) {
+                    NPCTank.frozen = false;
                 }
-                if ("easy".equals(tankAI.getDifficulty())) {
-                    tankAI.actionEasy();
-                } else if ("normal".equals(tankAI.getDifficulty())) {
-                    tankAI.actionNormal(this.tank);
-                } else if ("hard".equals(tankAI.getDifficulty())) {
-                    tankAI.actionHard(this.tank);
+                if ("easy".equals(NPCTank.getDifficulty())) {
+                    NPCTank.actionEasy();
+                } else if ("normal".equals(NPCTank.getDifficulty())) {
+                    NPCTank.actionNormal(this.playerTank);
+                } else if ("hard".equals(NPCTank.getDifficulty())) {
+                    NPCTank.actionHard(this.playerTank);
                 }
             }
         }
@@ -526,7 +526,7 @@ public class Board extends JPanel implements ActionListener {
         powerUps = new ArrayList<>();
 
         updateSprites();
-        resetTankPosition(tank, 2);
+        resetTankPosition(playerTank, 2);
         loadCollisionUtility(blocks, animations);
 
     }
@@ -548,13 +548,13 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void keyReleased(KeyEvent e) {
-            tank.keyReleased(e);
+            playerTank.keyReleased(e);
 
         }
 
         @Override
         public void keyPressed(KeyEvent e) {
-            tank.keyPressed(e);
+            playerTank.keyPressed(e);
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 if (!pause) {
                     SoundUtility.pause();

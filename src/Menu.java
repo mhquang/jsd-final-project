@@ -1,4 +1,4 @@
-package src.GameMain;
+package src;
 
 import src.utils.ImageUtility;
 

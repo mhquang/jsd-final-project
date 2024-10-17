@@ -1,4 +1,4 @@
-package src.SpriteClasses;
+package src.animation;
 
 /**
  * TankSpawn is an animation used when enemy tanks are spawned

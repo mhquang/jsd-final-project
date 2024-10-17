@@ -1,4 +1,4 @@
-package src.SpriteClasses;
+package src.animation;
 
 /**
  * Class that handles the exploding animations of the tanks Exploding tank is

@@ -1,11 +1,11 @@
 package src.utils;
 
-import src.GameMain.BlockType;
-import src.GameMain.Board;
-import src.SpriteClasses.Animation;
+import src.BlockType;
+import src.Board;
+import src.animation.Animation;
 import src.environments.Block;
-import src.SpriteClasses.Bullet;
-import src.SpriteClasses.ExplodingTank;
+import src.animation.Bullet;
+import src.animation.ExplodingTank;
 import src.powerups.BombPowerUp;
 import src.powerups.ClockPowerUp;
 import src.powerups.PowerUp;
@@ -14,8 +14,8 @@ import src.powerups.StarPowerUp;
 import src.powerups.TankPowerUp;
 import src.tanks.PlayerTank;
 import src.tanks.NPCTank;
-import src.SpriteClasses.TankShield;
-import src.SpriteClasses.TankSpawn;
+import src.animation.TankShield;
+import src.animation.TankSpawn;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Random;

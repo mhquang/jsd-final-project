@@ -1,4 +1,4 @@
-package src.SpriteClasses;
+package src.animation;
 
 import src.tanks.PlayerTank;
 

@@ -1,6 +1,6 @@
 package src.tanks;
 
-import src.SpriteClasses.Bullet;
+import src.animation.Bullet;
 import src.utils.SoundUtility;
 
 import javax.swing.*;

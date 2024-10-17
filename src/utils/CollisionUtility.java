@@ -1,9 +1,9 @@
 package src.utils;
 
-import src.GameMain.BlockType;
-import src.GameMain.Board;
-import src.GameMain.Map;
-import src.SpriteClasses.*;
+import src.BlockType;
+import src.Board;
+import src.Map;
+import src.animation.*;
 import src.environments.Base;
 import src.environments.Block;
 import src.tanks.NPCTank;

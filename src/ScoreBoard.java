@@ -1,9 +1,9 @@
-package src.GameMain;
+package src;
 
 import src.utils.CollisionUtility;
 import src.utils.ImageUtility;
 
-import static src.GameMain.Menu.loadFont;
+import static src.Menu.loadFont;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;

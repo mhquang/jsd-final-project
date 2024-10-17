@@ -1,8 +1,8 @@
 package src.tanks;
 
-import src.GameMain.Map;
+import src.Map;
 import src.Sprite;
-import src.SpriteClasses.Bullet;
+import src.animation.Bullet;
 import src.utils.CollisionUtility;
 
 import java.awt.*;

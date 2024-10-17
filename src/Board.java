@@ -1,13 +1,13 @@
-package src.GameMain;
+package src;
 
 import static src.utils.CollisionUtility.loadCollisionUtility;
 import static src.utils.CollisionUtility.resetTankPosition;
-import static src.GameMain.Menu.loadFont;
-import src.SpriteClasses.Animation;
+import static src.Menu.loadFont;
+import src.animation.Animation;
 import src.environments.Base;
 import src.environments.Block;
 import src.environments.Brick;
-import src.SpriteClasses.Bullet;
+import src.animation.Bullet;
 import src.environments.Edge;
 import src.powerups.PowerUp;
 import src.environments.River;

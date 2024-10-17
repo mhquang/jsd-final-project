@@ -1,6 +1,6 @@
-package src.SpriteClasses;
+package src.animation;
 
-import src.GameMain.Map;
+import src.Map;
 import src.Sprite;
 
 /**

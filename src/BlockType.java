@@ -1,4 +1,4 @@
-package src.GameMain;
+package src;
 
 /**
  * Enum class for block on the map

@@ -45,7 +45,7 @@ public class ExplodingTank extends Explosion {
             getImageDimensions();
         }
         if ((System.currentTimeMillis() - initialTime > 1100)) {
-            super.visible = false;
+            super.setVisible(false);
         }
     }
 

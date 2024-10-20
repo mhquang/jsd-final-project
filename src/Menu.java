@@ -74,7 +74,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 
         // Draw the title image centered
         g.drawImage(title,
-                Map.BOARD_WIDTH / 2 - title.getWidth(null) / 2 - 15,  // Center horizontally
+                Map.BOARD_WIDTH / 2 - title.getWidth(null) / 2 + 10,  // Center horizontally
                 yPos, this);
 
         // Draw menu when yPos reaches stopYPos
@@ -86,17 +86,17 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
             // Draw the menu items centered
             // Vertical space between menu items
             for (int i = 0; i < menuItems.length; i++) {
-                int xPosition = (Map.BOARD_WIDTH - g.getFontMetrics().stringWidth(menuItems[i])) / 2 - 10;
+                int xPosition = (Map.BOARD_WIDTH - g.getFontMetrics().stringWidth(menuItems[i])) / 2 + 10;
                 g.drawString(menuItems[i], xPosition, initialYPos + i * spacing);
             }
 
             // Draw the tank above the selected menu item
             int tankYPos = initialYPos + selectedItem * spacing - 20; // Adjust tank's position
-            g.drawImage(tank, Map.BOARD_WIDTH / 2 - tank.getWidth(null) / 2 - 110, tankYPos, this);
+            g.drawImage(tank, Map.BOARD_WIDTH / 2 - tank.getWidth(null) / 2 - 90, tankYPos, this);
 
             g.drawString("PRESS ENTER",
-                    Map.BOARD_WIDTH / 2 - 90,
-                    Map.BOARD_HEIGHT * 4 / 5 + 50);
+                    Map.BOARD_WIDTH / 2 - 70,
+                    Map.BOARD_HEIGHT * 4 / 5 + 90);
         }
     }
 

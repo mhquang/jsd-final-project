@@ -11,13 +11,12 @@ import src.Sprite;
  * helpful to stop tanks from killing themselves on the bullets that they spawn
  * Furthermore for future
  *
- * @param int x represents the starting x location in pixels
- * @param int y represents the starting y location in pixels
- * @param int direction represents the direction the bullet is facing
- * North/East/South/West correspond to 0/1/2/3 respectively
+ * @param int     x represents the starting x location in pixels
+ * @param int     y represents the starting y location in pixels
+ * @param int     direction represents the direction the bullet is facing
+ *                North/East/South/West correspond to 0/1/2/3 respectively
  * @param boolean Enemy represents whether an enemy tank (= true) or player tank
- * (=false) created a bullet
- *
+ *                (=false) created a bullet
  * @author Adrian Berg
  */
 public class Bullet extends Sprite {
@@ -49,25 +48,25 @@ public class Bullet extends Sprite {
 
     public void move() {
         if (direction == 0) {
-            y -= BULLET_SPEED;
+            setY(getY() - BULLET_SPEED);
         } else if (direction == 1) {
-            x += BULLET_SPEED;
+            setX(getX() + BULLET_SPEED);
         } else if (direction == 2) {
-            y += BULLET_SPEED;
+            setY(getY() + BULLET_SPEED);
         } else if (direction == 3) {
-            x -= BULLET_SPEED;
+            setX(getX() - BULLET_SPEED);
         }
-        if (x > BOARD_WIDTH + 100 + width) {
-            visible = false;
+        if (getX() > BOARD_WIDTH + 100 + getWidth()) {
+            setVisible(false);
         }
-        if (x < -width - 100) {
-            visible = false;
+        if (getX() < -getWidth() - 100) {
+            setVisible(false);
         }
-        if (y > BOARD_HEIGHT + height + 100) {
-            visible = false;
+        if (getY() > BOARD_HEIGHT + getHeight() + 100) {
+            setVisible(false);
         }
-        if (y < -height - 100) {
-            visible = false;
+        if (getY() < -getHeight() - 100) {
+            setVisible(false);
         }
     }
 

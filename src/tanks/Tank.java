@@ -62,11 +62,11 @@ public abstract class Tank extends Sprite {
     }
 
     public void move() {
-        Rectangle theTank = new Rectangle(x + dx, y + dy, width, height);
+        Rectangle theTank = new Rectangle(getX() + dx, getY() + dy, getWidth(), getHeight());
 
         if (!CollisionUtility.checkCollisionTankBlocks(theTank)) {
-            x = clamp(x + dx, 1, BOARD_WIDTH - width);
-            y = clamp(y + dy, 1, BOARD_HEIGHT - height);
+            setX(clamp(getX() + dx, 1, BOARD_WIDTH - getWidth()));
+            setY(clamp(getY() + dy, 1, BOARD_HEIGHT - getHeight()));
         }
     }
 

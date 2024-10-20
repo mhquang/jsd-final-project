@@ -27,7 +27,7 @@ public class Explosion extends Animation {
             getImageDimensions();
         }
         if ((System.currentTimeMillis() - initialTime > 300)) {
-            super.visible = false;
+            super.setVisible(false);
         }
 
     }

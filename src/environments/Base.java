@@ -13,10 +13,9 @@ public class Base extends Block {
     }
 
     public void updateAnimation() {
-        if (gameOver == true) {
+        if (gameOver) {
             loadImage("image/base_destroyed.png");
             getImageDimensions();
-
         }
     }
 

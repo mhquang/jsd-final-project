@@ -23,10 +23,9 @@ public class GameView extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Battle City");
         setName("mainFrame"); // NOI18N
-        setPreferredSize(new Dimension(512, 470));
+        setPreferredSize(new Dimension(560, 520));
+        setResizable(false);
 
-        gamePanel.setMinimumSize(new Dimension(500, 500));
-        gamePanel.setSize(new Dimension(528, 448));
         gamePanel.setLayout(new GridLayout(1, 0));
 
         GroupLayout layout = new GroupLayout(getContentPane());

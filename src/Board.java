@@ -15,10 +15,7 @@ import src.environments.Steel;
 import src.tanks.PlayerTank;
 import src.tanks.NPCTank;
 import src.environments.Tree;
-import src.utils.BoardUtility;
-import src.utils.CollisionUtility;
-import src.utils.ImageUtility;
-import src.utils.SoundUtility;
+import src.utils.*;
 
 import java.awt.Color;
 import java.awt.Dimension;

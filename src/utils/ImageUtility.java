@@ -36,7 +36,7 @@ public class ImageUtility {
         tankFast = loadImage("image/tank_fast.png");
         tankPower = loadImage("image/tank_power.png");
         tankArmor = loadImage("image/tank_armor.png");
-        background = loadImage("image/battle_city.png");
+        background = loadImage("image/title.png");
         tank = loadImage("image/playerTank_right.png");
         tree2 = loadImage("image/trees2.png");
     }

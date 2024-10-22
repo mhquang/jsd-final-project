@@ -32,7 +32,7 @@ public class CollisionUtility {
      * @param inblocks    input blocks
      * @param inexplosion
      */
-    static public void loadCollisionUtility(ArrayList<Block> inblocks,
+    public static void loadCollisionUtility(ArrayList<Block> inblocks,
                                             ArrayList<Animation> inexplosion) {
         blocks = inblocks;
         explosions = inexplosion;
@@ -61,14 +61,14 @@ public class CollisionUtility {
             block.lowerHealth();
             bullet.setVisible(false);
         }
-        if (type.equals(BlockType.STEEL) && bullet.getUpgrade() == false) {
+        if (type.equals(BlockType.STEEL) && !bullet.getUpgrade()) {
             bullet.setVisible(false);
         }
         if (type.equals(BlockType.BASE) && block.health != 0) {
             bullet.setVisible(false);
             Base b = (Base) block;
             b.gameOver = true;
-            explosions.add(new ExplodingTank(block.x, block.y));
+            explosions.add(new ExplodingTank(block.getX(), block.getY()));
             SoundUtility.explosion2();
             Board.setEndGame();
             SoundUtility.gameOver();
@@ -76,12 +76,12 @@ public class CollisionUtility {
         }
         if (block.getHealth() == 0) {
             SoundUtility.explosion2();
-            block.visible = false;
-            explosions.add(new Explosion(block.x, block.y));
+            block.setVisible(false);
+            explosions.add(new Explosion(block.getX(), block.getY()));
 
         }
         if (block.getHealth() == 0) {
-            block.visible = false;
+            block.setVisible(false);
 
         }
     }
@@ -114,12 +114,10 @@ public class CollisionUtility {
     public static void checkCollisionBulletsBlocks(ArrayList<Bullet> bullets,
                                                    ArrayList<Block> blocks) {
 
-        for (int x = 0; x < bullets.size(); x++) {
-            Bullet b = bullets.get(x);
+        for (Bullet b : bullets) {
             Rectangle r1 = b.getBounds();
 
-            for (int i = 0; i < blocks.size(); i++) {
-                Block aBlock = blocks.get(i);
+            for (Block aBlock : blocks) {
                 Rectangle r2 = aBlock.getBounds();
 
                 if (r1.intersects(r2)) {
@@ -143,10 +141,10 @@ public class CollisionUtility {
             Bullet b = bullets.get(x);
             Rectangle r1 = b.getBounds();
             if (r1.intersects(r2) && b.isEnemy) {
-                b.visible = false;
+                b.setVisible(false);
                 if (!playerTank.isShield()) {
                     SoundUtility.explosion1();
-                    explosions.add(new ExplodingTank(playerTank.x, playerTank.y));
+                    explosions.add(new ExplodingTank(playerTank.getX(), playerTank.getY()));
                     playerTank.downHealth();
                     resetTankPosition(playerTank, 1);
                 } else {
@@ -172,9 +170,9 @@ public class CollisionUtility {
                 NPCTank NPCTank = NPCTanks.get(i);
                 Rectangle r2 = NPCTank.getBounds();
 
-                if (r1.intersects(r2) && b.isEnemy == false) {
+                if (r1.intersects(r2) && !b.isEnemy) {
                     NPCTank.decreaseHP();
-                    b.visible = false;
+                    b.setVisible(false);
                     SoundUtility.BulletHitTank();
                     if (NPCTank.getHealth() < 1) {
                         incrementNum(NPCTank);
@@ -182,9 +180,9 @@ public class CollisionUtility {
                             powerUpX = NPCTank.getX();
                             powerUpY = NPCTank.getY();
                         }
-                        NPCTank.visible = false;
+                        NPCTank.setVisible(false);
                         Board.decrementEnemies(1);
-                        explosions.add(new ExplodingTank(NPCTank.x, NPCTank.y));
+                        explosions.add(new ExplodingTank(NPCTank.getX(), NPCTank.getY()));
                         SoundUtility.explosion1();
                     }
                 }
@@ -234,8 +232,8 @@ public class CollisionUtility {
      * @param type
      */
     public static void resetTankPosition(PlayerTank atank, int type) {
-        atank.x = 10 * 16;
-        atank.y = (Map.level0.length - 3) * 16;
+        atank.setX(13 * 16);
+        atank.setY(Map.level0.length * 16);
         atank.setShield(true);
         explosions.add(new TankShield(atank, 2));
         if (type == 1) {
@@ -260,14 +258,14 @@ public class CollisionUtility {
             Rectangle r2 = NPCTank.getBounds();
             if (r1.intersects(r2)) {
                 if (!atank.isShield()) {
-                    explosions.add(new ExplodingTank(atank.x, atank.y));
+                    explosions.add(new ExplodingTank(atank.getX(), atank.getY()));
                     atank.downHealth();
                     resetTankPosition(atank, 1);
                 } else {
                     incrementNum(NPCTank);
                     Board.decrementEnemies(1);
-                    NPCTank.visible = false;
-                    explosions.add(new ExplodingTank(atank.x, atank.y));
+                    NPCTank.setVisible(false);
+                    explosions.add(new ExplodingTank(atank.getX(), atank.getY()));
                 }
 
             }

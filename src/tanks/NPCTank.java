@@ -32,7 +32,7 @@ public class NPCTank extends Tank {
 
     public NPCTank(int x, int y, String difficulty, String type, boolean powerUp) {
         super(x, y, getHealthBasedOnType(type));
-        this.visible = true;
+        this.setVisible(true);
         this.powerUp = powerUp;
         this.difficulty = difficulty;
         this.type = type;
@@ -58,10 +58,10 @@ public class NPCTank extends Tank {
 
     public void fire() {
         Bullet aBullet = switch (this.getDirection()) {
-            case 0 -> new Bullet(x + width / 3, y, 0, true);
-            case 1 -> new Bullet(x + width, y + height / 3, 1, true);
-            case 2 -> new Bullet(x + width / 3, y + height, 2, true);
-            default -> new Bullet(x, y + height / 3, 3, true);
+            case 0 -> new Bullet(getX() + getWidth() / 3, getY(), 0, true);
+            case 1 -> new Bullet(getX() + getWidth(), getY() + getHeight() / 3, 1, true);
+            case 2 -> new Bullet(getX() + getWidth() / 3, getY() + getHeight(), 2, true);
+            default -> new Bullet(getX(), getY() + getHeight() / 3, 3, true);
         };
         if (!frozen) {
             this.getBullets().add(aBullet);
@@ -105,14 +105,6 @@ public class NPCTank extends Tank {
         dirUpdate();
     }
 
-    private static int getHealthBasedOnType(String type) {
-        return switch (type) {
-            case "armor" -> 4;  // Armor tanks have more health
-            case "power" -> 2;
-            default -> 1;  // Basic, fast tanks have 1 health
-        };
-    }
-
     public void actionEasy() {
         if (this.dirTimer >= this.dirUpdateInterval) {
             randomDir();
@@ -145,24 +137,9 @@ public class NPCTank extends Tank {
             this.dirTimer++;
         }
         this.move();
-        Rectangle theTank = new Rectangle(x + this.getDx(), y + this.getDy(), width, height);
+        Rectangle theTank = new Rectangle(getX() + this.getDx(), getY() + this.getDy(), getWidth(), getHeight());
 
         updateFire(randomDir, theTank);
-    }
-
-    private void updateFire(Random randomDir, Rectangle theTank) {
-        if (CollisionUtility.checkCollisionTankBlocks(theTank)) {
-            if (randomDir.nextBoolean() && this.fireTimer < 3) {
-                this.fire();
-                this.fireTimer++;
-            }
-        }
-        if (this.fireTimer >= this.fireUpdateInterval) {
-            this.fire();
-            this.fireTimer = 0;
-        } else {
-            this.fireTimer++;
-        }
     }
 
     public void actionHard(PlayerTank playerTank) {
@@ -180,7 +157,7 @@ public class NPCTank extends Tank {
         } else {
             this.dirTimer++;
         }
-        Rectangle theTank = new Rectangle(x + this.getDx(), y + this.getDy(), width, height);
+        Rectangle theTank = new Rectangle(getX() + this.getDx(), getY() + this.getDy(), getWidth(), getHeight());
         this.move();
         updateFire(randomDir, theTank);
     }
@@ -276,29 +253,52 @@ public class NPCTank extends Tank {
             switch (this.getDirection()) {
                 case 0:
                     ii = new ImageIcon(this.imageUp);
-                    image = ii.getImage();
+                    setImage(ii.getImage());
                     this.setDx((int) (0 * this.speedConst));
                     this.setDy((int) (-1 * this.speedConst));
                     break;
                 case 1:
                     ii = new ImageIcon(this.imageRight);
-                    image = ii.getImage();
+                    setImage(ii.getImage());
                     this.setDx((int) (1 * this.speedConst));
                     this.setDy((int) (0 * this.speedConst));
                     break;
                 case 2:
                     ii = new ImageIcon(this.imageDown);
-                    image = ii.getImage();
+                    setImage(ii.getImage());
                     this.setDx((int) (0 * this.speedConst));
                     this.setDy((int) (1 * this.speedConst));
                     break;
                 case 3:
                     ii = new ImageIcon(this.imageLeft);
-                    image = ii.getImage();
+                    setImage(ii.getImage());
                     this.setDx((int) (-1 * this.speedConst));
                     this.setDy((int) (0 * this.speedConst));
                     break;
             }
         }
+    }
+
+    private void updateFire(Random randomDir, Rectangle theTank) {
+        if (CollisionUtility.checkCollisionTankBlocks(theTank)) {
+            if (randomDir.nextBoolean() && this.fireTimer < 3) {
+                this.fire();
+                this.fireTimer++;
+            }
+        }
+        if (this.fireTimer >= this.fireUpdateInterval) {
+            this.fire();
+            this.fireTimer = 0;
+        } else {
+            this.fireTimer++;
+        }
+    }
+
+    private static int getHealthBasedOnType(String type) {
+        return switch (type) {
+            case "armor" -> 4;  // Armor tanks have more health
+            case "power" -> 2;
+            default -> 1;  // Basic, fast tanks have 1 health
+        };
     }
 }

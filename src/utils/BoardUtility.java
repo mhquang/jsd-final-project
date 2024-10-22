@@ -2,21 +2,13 @@ package src.utils;
 
 import src.BlockType;
 import src.Board;
-import src.animation.Animation;
+import src.animation.*;
 import src.environments.Block;
-import src.animation.Bullet;
-import src.animation.ExplodingTank;
-import src.powerups.BombPowerUp;
-import src.powerups.ClockPowerUp;
-import src.powerups.PowerUp;
-import src.powerups.ShieldPowerUp;
-import src.powerups.StarPowerUp;
-import src.powerups.TankPowerUp;
-import src.tanks.PlayerTank;
+import src.powerups.*;
 import src.tanks.NPCTank;
-import src.animation.TankShield;
-import src.animation.TankSpawn;
-import java.awt.Rectangle;
+import src.tanks.PlayerTank;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -31,10 +23,10 @@ public class BoardUtility {
     /**
      * Constructor for the BoardUtility class
      *
-     * @param enemy1 an array list that stores enemy tanks
-     * @param blocks1 an array list that stores blocks on the board
+     * @param enemy1      an array list that stores enemy tanks
+     * @param blocks1     an array list that stores blocks on the board
      * @param animations1 an array list that stores different animations
-     * @param powerUps1 an array list that stores different power-ups
+     * @param powerUps1   an array list that stores different power-ups
      * @param playerTank1 the Tank class that represents the player
      */
     public static void loadBoardUtility(ArrayList<NPCTank> enemy1,
@@ -82,13 +74,13 @@ public class BoardUtility {
                     }
                 } else if (type.equals(BlockType.BOMB)) {
                     for (int x = 0; x < enemy.size(); x++) {
-                        enemy.get(x).visible = false;
+                        enemy.get(x).setVisible(false);
                         for (NPCTank ai : enemy) {
                             CollisionUtility.incrementNum(ai);
                         }
                         Board.decrementEnemies(enemy.size());
-                        animations.add(new ExplodingTank(enemy.get(x).x,
-                                                         enemy.get(x).y));
+                        animations.add(new ExplodingTank(enemy.get(x).getX(),
+                                enemy.get(x).getY()));
                     }
                 }
             }
@@ -107,23 +99,23 @@ public class BoardUtility {
             switch (randomPow) {
                 case 0:
                     powerUps.add(new BombPowerUp(CollisionUtility.powerUpX,
-                                                 CollisionUtility.powerUpY));
+                            CollisionUtility.powerUpY));
                     break;
                 case 1:
                     powerUps.add(new ClockPowerUp(CollisionUtility.powerUpX,
-                                                  CollisionUtility.powerUpY));
+                            CollisionUtility.powerUpY));
                     break;
                 case 2:
                     powerUps.add(new ShieldPowerUp(CollisionUtility.powerUpX,
-                                                   CollisionUtility.powerUpY));
+                            CollisionUtility.powerUpY));
                     break;
                 case 3:
                     powerUps.add(new StarPowerUp(CollisionUtility.powerUpX,
-                                                 CollisionUtility.powerUpY));
+                            CollisionUtility.powerUpY));
                     break;
                 case 4:
                     powerUps.add(new TankPowerUp(CollisionUtility.powerUpX,
-                                                 CollisionUtility.powerUpY));
+                            CollisionUtility.powerUpY));
                     break;
                 default:
                     break;
@@ -137,7 +129,7 @@ public class BoardUtility {
      * Spawn Tank AI on the board.
      *
      * @param difficulty a string that represents the difficulty of the tank AI
-     * @param powerUp a boolean that represents if the tank AI carries powerUp
+     * @param powerUp    a boolean that represents if the tank AI carries powerUp
      */
     public static void spawnTankAI(String difficulty, boolean powerUp) {
         Random random = new Random();
@@ -146,7 +138,7 @@ public class BoardUtility {
         String type;
         if (randomType < 2) {
             type = "armor";
-        } else if (randomType >= 2 && randomType < 7) {
+        } else if (randomType < 7) {
             type = "power";
         } else if (randomType >= 8 && randomType < 13) {
             type = "fast";
@@ -154,17 +146,17 @@ public class BoardUtility {
             type = "basic";
         }
         if (randomPos == 0) {
-            animations.add(new TankSpawn(2 * 16, 1 * 16));
-            NPCTank AI = new NPCTank(2 * 16, 1 * 16, difficulty, type, powerUp);
-            enemy.add(AI);
+            animations.add(new TankSpawn(5 * 16, 2 * 16));
+            NPCTank NPC = new NPCTank(5 * 16, 2 * 16, difficulty, type, powerUp);
+            enemy.add(NPC);
         } else if (randomPos == 1) {
-            animations.add(new TankSpawn(14 * 16, 1 * 16));
-            NPCTank AI = new NPCTank(14 * 16, 1 * 16, difficulty, type, powerUp);
-            enemy.add(AI);
+            animations.add(new TankSpawn(16 * 16, 2 * 16));
+            NPCTank NPC = new NPCTank(16 * 16, 2 * 16, difficulty, type, powerUp);
+            enemy.add(NPC);
         } else {
-            animations.add(new TankSpawn(26 * 16, 1 * 16));
-            NPCTank AI = new NPCTank(26 * 16, 1 * 16, difficulty, type, powerUp);
-            enemy.add(AI);
+            animations.add(new TankSpawn(28 * 16, 2 * 16));
+            NPCTank NPC = new NPCTank(28 * 16, 2 * 16, difficulty, type, powerUp);
+            enemy.add(NPC);
         }
     }
 
@@ -178,7 +170,7 @@ public class BoardUtility {
                 Bullet b = bullets.get(i);
                 if (b.isVisible()) {
                     b.move();
-                } else if (b.isVisible() == false) {
+                } else  {
                     bullets.remove(i);
                 }
             }
@@ -195,7 +187,7 @@ public class BoardUtility {
             Bullet b = bullets.get(i);
             if (b.isVisible()) {
                 b.move();
-            } else if (b.isVisible() == false) {
+            } else {
                 bullets.remove(i);
             }
         }
@@ -213,7 +205,7 @@ public class BoardUtility {
             } else if (type.equals(BlockType.BASE)) {
                 b.updateAnimation();
             }
-            if (b.isVisible() == false) {
+            if (!b.isVisible()) {
                 blocks.remove(i);
             }
         }
@@ -224,7 +216,7 @@ public class BoardUtility {
      */
     public static void updateAnimations() {
         for (int i = 0; i < animations.size(); i++) {
-            if (animations.get(i).visible == false) {
+            if (!animations.get(i).isVisible()) {
                 animations.remove(i);
             } else {
                 animations.get(i).updateAnimation();
@@ -245,8 +237,7 @@ public class BoardUtility {
      * Check for collisions on the board.
      */
     public static void checkCollisions() {
-        ArrayList<Bullet> bullets = new ArrayList<>();
-        bullets.addAll(playerTank.getBullets());
+        ArrayList<Bullet> bullets = new ArrayList<>(playerTank.getBullets());
         for (NPCTank NPCTank : enemy) {
             bullets.addAll(NPCTank.getBullets());
         }

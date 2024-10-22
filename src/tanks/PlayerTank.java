@@ -22,15 +22,13 @@ import java.awt.event.KeyEvent;
 public class PlayerTank extends Tank {
 
     private long lastFired = 0;
-    private int lives;
     private boolean shield = false;
     private int starLevel = 0;
 
-    public PlayerTank(int x, int y, int lives) {
-        super(x, y, 2);
+    public PlayerTank(int x, int y, int health) {
+        super(x, y, health);
         loadImage("image/playerTank_up.png");
         getImageDimensions();
-        this.lives = lives;
     }
 
     public boolean isShield() {
@@ -39,10 +37,6 @@ public class PlayerTank extends Tank {
 
     public void setShield(boolean shield) {
         this.shield = shield;
-    }
-
-    public int getLives() {
-        return this.lives;
     }
 
     public int getStarLevel() {
@@ -55,10 +49,6 @@ public class PlayerTank extends Tank {
 
     public void upStarLevel() {
         starLevel += 1;
-    }
-
-    public void upLives() {
-        this.lives += 1;
     }
 
     public void upHealth() {
@@ -94,7 +84,7 @@ public class PlayerTank extends Tank {
                 this.setDx(-2);
             }
             ImageIcon ii = new ImageIcon("image/playerTank_left.png");
-            image = ii.getImage();
+            setImage(ii.getImage());
             this.setDirection(3);
         } else if (key == KeyEvent.VK_RIGHT) {
             this.setDx(1);
@@ -103,11 +93,11 @@ public class PlayerTank extends Tank {
                 this.setDx(2);
             }
             ImageIcon ii = new ImageIcon("image/playerTank_right.png");
-            image = ii.getImage();
+            setImage(ii.getImage());
             this.setDirection(1);
         } else if (key == KeyEvent.VK_UP) {
             ImageIcon ii = new ImageIcon("image/playerTank_up.png");
-            image = ii.getImage();
+            setImage(ii.getImage());
             this.setDx(0);
             this.setDy(-1);
             if (starLevel > 1) {
@@ -116,7 +106,7 @@ public class PlayerTank extends Tank {
             this.setDirection(0);
         } else if (key == KeyEvent.VK_DOWN) {
             ImageIcon ii = new ImageIcon("image/playerTank_down.png");
-            image = ii.getImage();
+            setImage(ii.getImage());
             this.setDx(0);
             this.setDy(1);
             if (starLevel > 1) {
@@ -153,10 +143,10 @@ public class PlayerTank extends Tank {
 
     private Bullet createBullet() {
         return switch (this.getDirection()) {
-            case 0 -> new Bullet(x + width / 3, y, 0, false);
-            case 1 -> new Bullet(x + width - 3, y + height / 3, 1, false);
-            case 2 -> new Bullet(x + width / 3, y + height - 3, 2, false);
-            case 3 -> new Bullet(x, y + height / 3, 3, false);
+            case 0 -> new Bullet(getX() + getWidth() / 3, getY(), 0, false);
+            case 1 -> new Bullet(getX() + getWidth() - 3, getY() + getHeight() / 3, 1, false);
+            case 2 -> new Bullet(getX() + getWidth() / 3, getY() + getHeight() - 3, 2, false);
+            case 3 -> new Bullet(getX(), getY() + getHeight() / 3, 3, false);
             default -> null;
         };
     }

@@ -46,7 +46,7 @@ public class TankSpawn extends Animation {
             getImageDimensions();
         }
         if ((System.currentTimeMillis() - initialTime > 800)) {
-            super.visible = false;
+            super.setVisible(false);
         }
     }
 }

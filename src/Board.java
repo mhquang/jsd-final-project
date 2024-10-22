@@ -1,35 +1,27 @@
 package src;
 
-import static src.utils.CollisionUtility.loadCollisionUtility;
-import static src.utils.CollisionUtility.resetTankPosition;
-import static src.Menu.loadFont;
 import src.animation.Animation;
-import src.environments.Base;
-import src.environments.Block;
-import src.environments.Brick;
 import src.animation.Bullet;
-import src.environments.Edge;
+import src.environments.*;
 import src.powerups.PowerUp;
-import src.environments.River;
-import src.environments.Steel;
-import src.tanks.PlayerTank;
 import src.tanks.NPCTank;
-import src.environments.Tree;
-import src.utils.*;
+import src.tanks.PlayerTank;
+import src.utils.BoardUtility;
+import src.utils.CollisionUtility;
+import src.utils.ImageUtility;
+import src.utils.SoundUtility;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+
+import static src.Menu.loadFont;
+import static src.utils.CollisionUtility.loadCollisionUtility;
+import static src.utils.CollisionUtility.resetTankPosition;
 
 /**
  * Board class of the game
@@ -37,7 +29,7 @@ import javax.swing.Timer;
  * @author Adrian Berg
  */
 public class Board extends JPanel implements ActionListener {
-    // Instance varaible for the timer of the tank
+    // Instance variable for the timer of the tank
     private Timer timer;
     private PlayerTank playerTank;
 
@@ -47,12 +39,12 @@ public class Board extends JPanel implements ActionListener {
     private ArrayList<PowerUp> powerUps = new ArrayList<>();
     private final ImageUtility imageInstance = ImageUtility.getInstance();
 
-    private final int INIT_PLAYER_X = 10 * 16;
-    private final int INIT_PLAYER_Y = (Map.level0.length - 3) * 16;
+    private final int INIT_PLAYER_X = 13 * 16;
+    private final int INIT_PLAYER_Y = Map.level0.length * 16;
     private final int B_WIDTH = Map.BOARD_WIDTH;
     private final int B_HEIGHT = Map.BOARD_HEIGHT;
     private final int DELAY = 15;
-    private final int initX = 29;
+    private final int initX = 31;
     private boolean pause = false;
     public static boolean gameOver = false;
     private int yPos = Map.BOARD_HEIGHT;
@@ -86,7 +78,7 @@ public class Board extends JPanel implements ActionListener {
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         numAI = 0;
-        playerTank = new PlayerTank(INIT_PLAYER_X, INIT_PLAYER_Y, 4);
+        playerTank = new PlayerTank(INIT_PLAYER_X, INIT_PLAYER_Y, 5);
 
         initBlocks();
         CollisionUtility.loadCollisionUtility(blocks, animations);
@@ -97,7 +89,6 @@ public class Board extends JPanel implements ActionListener {
      * Initialize blocks according to the map.
      */
     public void initBlocks() {
-
         int[][] map = Map.getMap(stage);
         SoundUtility.startStage();
         int type;
@@ -157,14 +148,13 @@ public class Board extends JPanel implements ActionListener {
         for (NPCTank NPCTank : enemy) {
             if (NPCTank.isVisible()) {
                 g.drawImage(NPCTank.getImage(), NPCTank.getX(), NPCTank.getY(),
-                            this);
+                        this);
             }
         }
         if (playerTank.isVisible()) {
             g.drawImage(playerTank.getImage(), playerTank.getX(), playerTank.getY(), this);
         }
-        ArrayList<Bullet> bullets = new ArrayList<>();
-        bullets.addAll(playerTank.getBullets());
+        ArrayList<Bullet> bullets = new ArrayList<>(playerTank.getBullets());
         for (NPCTank NPCTank : enemy) {
             bullets.addAll(NPCTank.getBullets());
         }
@@ -201,16 +191,16 @@ public class Board extends JPanel implements ActionListener {
         drawEnemies(g, numEnemies);
 
         // Draw lives
-        String ipText = "IP";
-        int lives = playerTank.getHealth();
+        String ipText = "P1";
+        int health = playerTank.getHealth();
         Font font = loadFont();
         g.setFont(font);
         g.drawString(ipText, initX * 16, 17 * 16);
 
         Image liveIcon = imageInstance.getLives();
         g.drawImage(liveIcon, initX * 16, 17 * 16, this);
-        g.drawString(String.valueOf(lives < 0 ? 0 : lives), (initX + 1) * 16,
-                     18 * 16);
+        g.drawString(String.valueOf(Math.max(health, 0)), (initX + 1) * 16,
+                18 * 16);
 
         // Draw stages
         Image flagIcon = imageInstance.getFlagIcon();
@@ -222,7 +212,7 @@ public class Board extends JPanel implements ActionListener {
      * Draw the part that shows how many enemies left in the game on the edge of
      * the game board
      *
-     * @param g Graphics
+     * @param g          Graphics
      * @param numEnemies number of enemies left in the game
      */
     private void drawEnemies(Graphics g, int numEnemies) {
@@ -273,7 +263,7 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if (Menu.getMenuStatus() == false && pause == true) {
+        if (!Menu.getMenuStatus() && pause) {
             return;
         }
         if (gameOver) {
@@ -305,7 +295,7 @@ public class Board extends JPanel implements ActionListener {
                 initBlocks();
                 CollisionUtility.loadCollisionUtility(blocks, animations);
                 BoardUtility.loadBoardUtility(enemy, blocks, animations,
-                                              powerUps,
+                        powerUps,
                         playerTank);
             }
         }
@@ -314,7 +304,7 @@ public class Board extends JPanel implements ActionListener {
     /**
      * Update animations on the board this includes
      * TankShield/Explosion/ExplodingTank/TankSpawn
-     *
+     * <p>
      * Animations are removed if vis is false. Otherwise animations are updated
      * via the updateAnimation method
      */
@@ -324,7 +314,7 @@ public class Board extends JPanel implements ActionListener {
 
     /**
      * Update blocks on the board this includes Base/Brick/Edge/River/Steel/Tree
-     *
+     * <p>
      * Blocks are removed if vis is false. Blocks that are types RIVER and BASE
      * they will be updated via the updateAnimation method
      */
@@ -334,7 +324,7 @@ public class Board extends JPanel implements ActionListener {
 
     /**
      * Updates the player tank.
-     *
+     * <p>
      * If the tank is visible it is moved
      */
     private void updateTank() {
@@ -360,7 +350,7 @@ public class Board extends JPanel implements ActionListener {
             }
         }
         for (int i = 0; i < enemy.size(); i++) {
-            if (enemy.get(i).visible == false) {
+            if (!enemy.get(i).isVisible()) {
                 enemy.remove(i);
             }
         }
@@ -376,9 +366,9 @@ public class Board extends JPanel implements ActionListener {
                 powerUp = (numAI % 4 == 1);
                 if (numAI < 2) {
                     BoardUtility.spawnTankAI("easy", powerUp);
-                } else if (numAI >= 2 && numAI < 6) {
+                } else if (numAI < 6) {
                     BoardUtility.spawnTankAI("normal", powerUp);
-                } else if (numAI >= 6) {
+                } else {
                     BoardUtility.spawnTankAI("hard", powerUp);
                 }
                 numAI++;
@@ -390,12 +380,10 @@ public class Board extends JPanel implements ActionListener {
 
     /**
      * Updates the powerUps on the board
-     *
+     * <p>
      * Unlike the other updateMethods, update for powerUps handles the collision
      * of a player tank and a powerUp PowerUps are removed if vis = false
      * otherwise they are updated via updateAnimations.
-     *
-     *
      */
     private void updatePowerUps() {
         BoardUtility.updatePowerUps();
@@ -407,7 +395,7 @@ public class Board extends JPanel implements ActionListener {
 
     /**
      * Updates the bullets in the player Tank
-     *
+     * <p>
      * If the bullet vis = false they are removed. Otherwise they are moved with
      * move()
      */
@@ -444,21 +432,21 @@ public class Board extends JPanel implements ActionListener {
     public void endGame(Graphics g) {
         if (gameOver) {
             Timer gameOverTimer = new Timer(80, new ActionListener() {
-                                        @Override
-                                        public void actionPerformed(
-                                                ActionEvent e) {
-                                            yPos += direction;
-                                            if (yPos == stopYPos) {
-                                                direction = 0;
-                                            } else if (yPos > getHeight()) {
-                                                yPos = getHeight();
-                                            } else if (yPos < 0) {
-                                                yPos = 0;
-                                                direction *= -1;
-                                            }
-                                            repaint();
-                                        }
-                                    });
+                @Override
+                public void actionPerformed(
+                        ActionEvent e) {
+                    yPos += direction;
+                    if (yPos == stopYPos) {
+                        direction = 0;
+                    } else if (yPos > getHeight()) {
+                        yPos = getHeight();
+                    } else if (yPos < 0) {
+                        yPos = 0;
+                        direction *= -1;
+                    }
+                    repaint();
+                }
+            });
             gameOverTimer.setRepeats(true);
             gameOverTimer.setCoalesce(true);
             gameOverTimer.start();
@@ -470,12 +458,12 @@ public class Board extends JPanel implements ActionListener {
             if (yPos == stopYPos) {
                 gameOverTimer.stop();
                 Timer sorceBoardTimer = new Timer(3000, new ActionListener() {
-                                              @Override
-                                              public void actionPerformed(
-                                                      ActionEvent e) {
-                                                  loadScoreBoard(theView);
-                                              }
-                                          });
+                    @Override
+                    public void actionPerformed(
+                            ActionEvent e) {
+                        loadScoreBoard(theView);
+                    }
+                });
                 sorceBoardTimer.setRepeats(false);
                 sorceBoardTimer.start();
             }
@@ -557,7 +545,6 @@ public class Board extends JPanel implements ActionListener {
                     SoundUtility.pause();
                 }
                 pause = !pause;
-
             }
         }
     }

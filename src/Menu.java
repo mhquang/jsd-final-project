@@ -15,14 +15,13 @@ import java.util.logging.Logger;
 
 public class Menu extends JPanel implements ActionListener, KeyListener {
     // Load the images from ImageUtility class
-    private Image title, tank, tree;
+    private Image title, tank;
     private final GameView theView;
     private int yPos = Map.BOARD_HEIGHT;
     private int direction = -1;
     private final int stopYPos = 50;
     private static boolean menuStatus = true;
     private final ImageUtility imageInstance = ImageUtility.getInstance();
-
     private int selectedItem = 0;  // Tracks which menu item is selected
     private final String[] menuItems = {"1 PLAYER", "2 PLAYERS", "SETTING", "HELP"}; // Menu items
 
@@ -61,7 +60,6 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
     private void loadMenuImages() {
         title = imageInstance.getBackground();
         tank = imageInstance.getTank();
-        tree = imageInstance.getTree2();
     }
 
     @Override
@@ -74,7 +72,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 
         // Draw the title image centered
         g.drawImage(title,
-                Map.BOARD_WIDTH / 2 - title.getWidth(null) / 2 - 15,  // Center horizontally
+                Map.BOARD_WIDTH / 2 - title.getWidth(null) / 2 + 10,  // Center horizontally
                 yPos, this);
 
         // Draw menu when yPos reaches stopYPos
@@ -86,17 +84,17 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
             // Draw the menu items centered
             // Vertical space between menu items
             for (int i = 0; i < menuItems.length; i++) {
-                int xPosition = (Map.BOARD_WIDTH - g.getFontMetrics().stringWidth(menuItems[i])) / 2 - 10;
+                int xPosition = (Map.BOARD_WIDTH - g.getFontMetrics().stringWidth(menuItems[i])) / 2 + 10;
                 g.drawString(menuItems[i], xPosition, initialYPos + i * spacing);
             }
 
             // Draw the tank above the selected menu item
             int tankYPos = initialYPos + selectedItem * spacing - 20; // Adjust tank's position
-            g.drawImage(tank, Map.BOARD_WIDTH / 2 - tank.getWidth(null) / 2 - 110, tankYPos, this);
+            g.drawImage(tank, Map.BOARD_WIDTH / 2 - tank.getWidth(null) / 2 - 90, tankYPos, this);
 
             g.drawString("PRESS ENTER",
-                    Map.BOARD_WIDTH / 2 - 90,
-                    Map.BOARD_HEIGHT * 4 / 5 + 50);
+                    Map.BOARD_WIDTH / 2 - 70,
+                    Map.BOARD_HEIGHT * 4 / 5 + 90);
         }
     }
 
@@ -144,9 +142,18 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
                 selectedItem = menuItems.length - 1; // Loop back to the bottom
             }
             repaint(); // Refresh the menu to show the tank's new position
-        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_SPACE) {
             if (menuStatus) {
-                loadBoard();
+                if (selectedItem == 0) {
+                    loadBoard();
+                } else if (selectedItem == 1) {
+                    System.out.println(menuItems[1]);
+                } else if (selectedItem == 2) {
+                    System.out.println(menuItems[2]);
+                } else if (selectedItem == 3) {
+                    System.out.println(menuItems[3]);
+                }
+
             }
         }
     }

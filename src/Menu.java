@@ -15,14 +15,13 @@ import java.util.logging.Logger;
 
 public class Menu extends JPanel implements ActionListener, KeyListener {
     // Load the images from ImageUtility class
-    private Image title, tank, tree;
+    private Image title, tank;
     private final GameView theView;
     private int yPos = Map.BOARD_HEIGHT;
     private int direction = -1;
     private final int stopYPos = 50;
     private static boolean menuStatus = true;
     private final ImageUtility imageInstance = ImageUtility.getInstance();
-
     private int selectedItem = 0;  // Tracks which menu item is selected
     private final String[] menuItems = {"1 PLAYER", "2 PLAYERS", "SETTING", "HELP"}; // Menu items
 
@@ -61,7 +60,6 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
     private void loadMenuImages() {
         title = imageInstance.getBackground();
         tank = imageInstance.getTank();
-        tree = imageInstance.getTree2();
     }
 
     @Override
@@ -144,9 +142,18 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
                 selectedItem = menuItems.length - 1; // Loop back to the bottom
             }
             repaint(); // Refresh the menu to show the tank's new position
-        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_SPACE) {
             if (menuStatus) {
-                loadBoard();
+                if (selectedItem == 0) {
+                    loadBoard();
+                } else if (selectedItem == 1) {
+                    System.out.println(menuItems[1]);
+                } else if (selectedItem == 2) {
+                    System.out.println(menuItems[2]);
+                } else if (selectedItem == 3) {
+                    System.out.println(menuItems[3]);
+                }
+
             }
         }
     }

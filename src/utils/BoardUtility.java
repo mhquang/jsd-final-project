@@ -150,8 +150,8 @@ public class BoardUtility {
             NPCTank NPC = new NPCTank(5 * 16, 2 * 16, difficulty, type, powerUp);
             enemy.add(NPC);
         } else if (randomPos == 1) {
-            animations.add(new TankSpawn(17 * 16, 2 * 16));
-            NPCTank NPC = new NPCTank(17 * 16, 2 * 16, difficulty, type, powerUp);
+            animations.add(new TankSpawn(16 * 16, 2 * 16));
+            NPCTank NPC = new NPCTank(16 * 16, 2 * 16, difficulty, type, powerUp);
             enemy.add(NPC);
         } else {
             animations.add(new TankSpawn(28 * 16, 2 * 16));

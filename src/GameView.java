@@ -21,7 +21,7 @@ public class GameView extends JFrame {
         gamePanel = new JPanel();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Battle City");
+        setTitle("Tank 1990");
         setName("mainFrame"); // NOI18N
         setPreferredSize(new Dimension(560, 520));
         setResizable(false);

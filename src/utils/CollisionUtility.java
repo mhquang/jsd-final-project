@@ -61,7 +61,7 @@ public class CollisionUtility {
             block.lowerHealth();
             bullet.setVisible(false);
         }
-        if (type.equals(BlockType.STEEL) && bullet.getUpgrade() == false) {
+        if (type.equals(BlockType.STEEL) && !bullet.getUpgrade()) {
             bullet.setVisible(false);
         }
         if (type.equals(BlockType.BASE) && block.health != 0) {
@@ -114,12 +114,10 @@ public class CollisionUtility {
     public static void checkCollisionBulletsBlocks(ArrayList<Bullet> bullets,
                                                    ArrayList<Block> blocks) {
 
-        for (int x = 0; x < bullets.size(); x++) {
-            Bullet b = bullets.get(x);
+        for (Bullet b : bullets) {
             Rectangle r1 = b.getBounds();
 
-            for (int i = 0; i < blocks.size(); i++) {
-                Block aBlock = blocks.get(i);
+            for (Block aBlock : blocks) {
                 Rectangle r2 = aBlock.getBounds();
 
                 if (r1.intersects(r2)) {
@@ -172,7 +170,7 @@ public class CollisionUtility {
                 NPCTank NPCTank = NPCTanks.get(i);
                 Rectangle r2 = NPCTank.getBounds();
 
-                if (r1.intersects(r2) && b.isEnemy == false) {
+                if (r1.intersects(r2) && !b.isEnemy) {
                     NPCTank.decreaseHP();
                     b.setVisible(false);
                     SoundUtility.BulletHitTank();

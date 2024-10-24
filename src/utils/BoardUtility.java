@@ -68,9 +68,9 @@ public class BoardUtility {
                 } else if (type.equals(BlockType.STAR)) {
                     playerTank.upStarLevel();
                 } else if (type.equals(BlockType.CLOCK)) {
-                    for (int x = 0; x < enemy.size(); x++) {
-                        enemy.get(x).frozen = true;
-                        enemy.get(x).frozenStartTime = System.currentTimeMillis();
+                    for (NPCTank npcTank : enemy) {
+                        npcTank.frozen = true;
+                        npcTank.frozenStartTime = System.currentTimeMillis();
                     }
                 } else if (type.equals(BlockType.BOMB)) {
                     for (int x = 0; x < enemy.size(); x++) {

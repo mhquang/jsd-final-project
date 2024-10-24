@@ -24,10 +24,12 @@ public class PlayerTank extends Tank {
     private long lastFired = 0;
     private boolean shield = false;
     private int starLevel = 0;
+    private boolean isPlayerOne;
 
-    public PlayerTank(int x, int y, int health) {
+    public PlayerTank(int x, int y, int health, boolean isPlayerOne) {
         super(x, y, health);
-        loadImage("image/playerTank_up.png");
+        this.isPlayerOne = isPlayerOne;
+        loadImage(isPlayerOne ? "image/playerTank_up.png" : "image/tank_power.png");
         getImageDimensions();
     }
 
@@ -74,67 +76,94 @@ public class PlayerTank extends Tank {
         int key = e.getKeyCode();
         int time = (starLevel == 0) ? 700 : 250;
 
+        if (isPlayerOne) {
+            handlePlayerOneControls(key, time);
+        } else {
+            handlePlayerTwoControls(key, time);
+        }
+    }
+
+    private void handlePlayerTwoControls(int key, int time) {
+        if (key == KeyEvent.VK_F && (System.currentTimeMillis() - lastFired) > time) {
+            fire();
+            lastFired = System.currentTimeMillis();
+        } else if (key == KeyEvent.VK_A) {
+            moveLeft();
+        } else if (key == KeyEvent.VK_D) {
+            moveRight();
+        } else if (key == KeyEvent.VK_W) {
+            moveUp();
+        } else if (key == KeyEvent.VK_S) {
+            moveDown();
+        }
+    }
+
+    private void handlePlayerOneControls(int key, int time) {
         if (key == KeyEvent.VK_SPACE && (System.currentTimeMillis() - lastFired) > time) {
             fire();
             lastFired = System.currentTimeMillis();
         } else if (key == KeyEvent.VK_LEFT) {
-            this.setDx(-1);
-            this.setDy(0);
-            if (starLevel > 1) {
-                this.setDx(-2);
-            }
-            ImageIcon ii = new ImageIcon("image/playerTank_left.png");
-            setImage(ii.getImage());
-            this.setDirection(3);
+            moveLeft();
         } else if (key == KeyEvent.VK_RIGHT) {
-            this.setDx(1);
-            this.setDy(0);
-            if (starLevel > 1) {
-                this.setDx(2);
-            }
-            ImageIcon ii = new ImageIcon("image/playerTank_right.png");
-            setImage(ii.getImage());
-            this.setDirection(1);
+            moveRight();
         } else if (key == KeyEvent.VK_UP) {
-            ImageIcon ii = new ImageIcon("image/playerTank_up.png");
-            setImage(ii.getImage());
-            this.setDx(0);
-            this.setDy(-1);
-            if (starLevel > 1) {
-                this.setDy(-2);
-            }
-            this.setDirection(0);
+            moveUp();
         } else if (key == KeyEvent.VK_DOWN) {
-            ImageIcon ii = new ImageIcon("image/playerTank_down.png");
-            setImage(ii.getImage());
-            this.setDx(0);
-            this.setDy(1);
-            if (starLevel > 1) {
-                this.setDy(2);
-            }
-            this.setDirection(2);
+            moveDown();
         }
+    }
+
+    private void moveLeft() {
+        this.setDx(-1);
+        this.setDy(0);
+        if (starLevel > 1) this.setDx(-2);
+        setImage(new ImageIcon(isPlayerOne ? "image/playerTank_left.png" : "image/tank_power_left.png").getImage());
+        this.setDirection(3);
+    }
+
+    private void moveRight() {
+        this.setDx(1);
+        this.setDy(0);
+        if (starLevel > 1) this.setDx(2);
+        setImage(new ImageIcon(isPlayerOne ? "image/playerTank_right.png" : "image/tank_power_right.png").getImage());
+        this.setDirection(1);
+    }
+
+    private void moveUp() {
+        this.setDx(0);
+        this.setDy(-1);
+        if (starLevel > 1) this.setDy(-2);
+        setImage(new ImageIcon(isPlayerOne ? "image/playerTank_up.png" : "image/tank_power_up.png").getImage());
+        this.setDirection(0);
+    }
+
+    private void moveDown() {
+        this.setDx(0);
+        this.setDy(1);
+        if (starLevel > 1) this.setDy(2);
+        setImage(new ImageIcon(isPlayerOne ? "image/playerTank_down.png" : "image/tank_power_down.png").getImage());
+        this.setDirection(2);
     }
 
     public void keyReleased(KeyEvent e) {
 
         int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_LEFT) {
-            this.setDx(0);
+        if (isPlayerOne) {
+            handlePlayerOneKeyReleased(key);
+        } else {
+            handlePlayerTwoKeyReleased(key);
         }
+    }
 
-        if (key == KeyEvent.VK_RIGHT) {
-            this.setDx(0);
-        }
+    private void handlePlayerOneKeyReleased(int key) {
+        if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_RIGHT) this.setDx(0);
+        if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) this.setDy(0);
+    }
 
-        if (key == KeyEvent.VK_UP) {
-            this.setDy(0);
-        }
-
-        if (key == KeyEvent.VK_DOWN) {
-            this.setDy(0);
-        }
+    private void handlePlayerTwoKeyReleased(int key) {
+        if (key == KeyEvent.VK_A || key == KeyEvent.VK_D) this.setDx(0);
+        if (key == KeyEvent.VK_W || key == KeyEvent.VK_S) this.setDy(0);
     }
 
     private boolean canFire() {

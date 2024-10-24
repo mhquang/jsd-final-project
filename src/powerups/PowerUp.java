@@ -37,11 +37,11 @@ public class PowerUp extends Sprite {
         long timeDifference = (System.currentTimeMillis() - loadTime);
         if (timeDifference > 5000) {
 
-            if (timeDifference % 10 == 0 && flip == false) {
+            if (timeDifference % 10 == 0 && !flip) {
                 loadImage("");
                 getImageDimensions();
                 flip = true;
-            } else if (timeDifference % 10 == 0 && flip == true) {
+            } else if (timeDifference % 10 == 0) {
                 loadImage(s);
                 getImageDimensions();
                 flip = false;

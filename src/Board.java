@@ -31,7 +31,7 @@ import static src.utils.CollisionUtility.resetTankPosition;
 public class Board extends JPanel implements ActionListener {
     // Instance variable for the timer of the tank
     private Timer timer;
-    private PlayerTank playerTank;
+    private PlayerTank player1Tank, player2Tank;
 
     private ArrayList<NPCTank> enemy = new ArrayList<>();
     private ArrayList<Block> blocks = new ArrayList<>();
@@ -78,11 +78,12 @@ public class Board extends JPanel implements ActionListener {
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         numAI = 0;
-        playerTank = new PlayerTank(INIT_PLAYER_X, INIT_PLAYER_Y, 5);
+        player1Tank = new PlayerTank(INIT_PLAYER_X, INIT_PLAYER_Y, 5, true);
+
 
         initBlocks();
         CollisionUtility.loadCollisionUtility(blocks, animations);
-        BoardUtility.loadBoardUtility(enemy, blocks, animations, powerUps, playerTank);
+        BoardUtility.loadBoardUtility(enemy, blocks, animations, powerUps, player1Tank);
     }
 
     /**
@@ -136,7 +137,7 @@ public class Board extends JPanel implements ActionListener {
      * the game
      */
     private void checkGameOver() {
-        if (playerTank.getHealth() < 0) {
+        if (player1Tank.getHealth() == 0) {
             setEndGame();
         }
     }
@@ -151,10 +152,10 @@ public class Board extends JPanel implements ActionListener {
                         this);
             }
         }
-        if (playerTank.isVisible()) {
-            g.drawImage(playerTank.getImage(), playerTank.getX(), playerTank.getY(), this);
+        if (player1Tank.isVisible()) {
+            g.drawImage(player1Tank.getImage(), player1Tank.getX(), player1Tank.getY(), this);
         }
-        ArrayList<Bullet> bullets = new ArrayList<>(playerTank.getBullets());
+        ArrayList<Bullet> bullets = new ArrayList<>(player1Tank.getBullets());
         for (NPCTank NPCTank : enemy) {
             bullets.addAll(NPCTank.getBullets());
         }
@@ -192,7 +193,7 @@ public class Board extends JPanel implements ActionListener {
 
         // Draw lives
         String ipText = "P1";
-        int health = playerTank.getHealth();
+        int health = player1Tank.getHealth();
         Font font = loadFont();
         g.setFont(font);
         g.drawString(ipText, initX * 16, 17 * 16);
@@ -294,9 +295,7 @@ public class Board extends JPanel implements ActionListener {
 
                 initBlocks();
                 CollisionUtility.loadCollisionUtility(blocks, animations);
-                BoardUtility.loadBoardUtility(enemy, blocks, animations,
-                        powerUps,
-                        playerTank);
+                BoardUtility.loadBoardUtility(enemy, blocks, animations, powerUps, player1Tank);
             }
         }
     }
@@ -343,9 +342,9 @@ public class Board extends JPanel implements ActionListener {
                 if ("easy".equals(NPCTank.getDifficulty())) {
                     NPCTank.actionEasy();
                 } else if ("normal".equals(NPCTank.getDifficulty())) {
-                    NPCTank.actionNormal(this.playerTank);
+                    NPCTank.actionNormal(this.player1Tank);
                 } else if ("hard".equals(NPCTank.getDifficulty())) {
-                    NPCTank.actionHard(this.playerTank);
+                    NPCTank.actionHard(this.player1Tank);
                 }
             }
         }
@@ -511,7 +510,7 @@ public class Board extends JPanel implements ActionListener {
         powerUps = new ArrayList<>();
 
         updateSprites();
-        resetTankPosition(playerTank, 2);
+        resetTankPosition(player1Tank, 2);
         loadCollisionUtility(blocks, animations);
 
     }
@@ -533,13 +532,13 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void keyReleased(KeyEvent e) {
-            playerTank.keyReleased(e);
+            player1Tank.keyReleased(e);
 
         }
 
         @Override
         public void keyPressed(KeyEvent e) {
-            playerTank.keyPressed(e);
+            player1Tank.keyPressed(e);
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 if (!pause) {
                     SoundUtility.pause();

@@ -10,10 +10,10 @@ package src.powerups;
 public class TankPowerUp extends PowerUp {
     public TankPowerUp(int x, int y) {
         super(x, y);
-        loadImage("image/powerup_tank.png");
+        loadImage("image/power_ups/powerup_tank.png");
         getImageDimensions();
         setType(7);
-        s = "image/powerup_tank.png";
+        s = "image/power_ups/powerup_tank.png";
     }
 
 }

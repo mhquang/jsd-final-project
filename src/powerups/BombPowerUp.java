@@ -3,10 +3,10 @@ package src.powerups;
 public class BombPowerUp extends PowerUp {
     public BombPowerUp(int x, int y) {
         super(x, y);
-        loadImage("image/powerup_grenade.png");
+        loadImage("image/power_ups/powerup_grenade.png");
         getImageDimensions();
         setType(9);
-        s = "image/powerup_grenade.png";
+        s = "image/power_ups/powerup_grenade.png";
     }
 
 }

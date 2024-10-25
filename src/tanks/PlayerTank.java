@@ -29,7 +29,7 @@ public class PlayerTank extends Tank {
     public PlayerTank(int x, int y, int health, boolean isPlayerOne) {
         super(x, y, health);
         this.isPlayerOne = isPlayerOne;
-        loadImage(isPlayerOne ? "image/playerTank_up.png" : "image/tank_power.png");
+        loadImage(isPlayerOne ? "image/player_tank/playerTank_up.png" : "image/player_tank/player2Tank_up.png");
         getImageDimensions();
     }
 
@@ -117,7 +117,7 @@ public class PlayerTank extends Tank {
         this.setDx(-1);
         this.setDy(0);
         if (starLevel > 1) this.setDx(-2);
-        setImage(new ImageIcon(isPlayerOne ? "image/playerTank_left.png" : "image/tank_power_left.png").getImage());
+        setImage(new ImageIcon(isPlayerOne ? "image/player_tank/playerTank_left.png" : "image/player_tank/player2Tank_left.png").getImage());
         this.setDirection(3);
     }
 
@@ -125,7 +125,7 @@ public class PlayerTank extends Tank {
         this.setDx(1);
         this.setDy(0);
         if (starLevel > 1) this.setDx(2);
-        setImage(new ImageIcon(isPlayerOne ? "image/playerTank_right.png" : "image/tank_power_right.png").getImage());
+        setImage(new ImageIcon(isPlayerOne ? "image/player_tank/playerTank_right.png" : "image/player_tank/player2Tank_right.png").getImage());
         this.setDirection(1);
     }
 
@@ -133,7 +133,7 @@ public class PlayerTank extends Tank {
         this.setDx(0);
         this.setDy(-1);
         if (starLevel > 1) this.setDy(-2);
-        setImage(new ImageIcon(isPlayerOne ? "image/playerTank_up.png" : "image/tank_power_up.png").getImage());
+        setImage(new ImageIcon(isPlayerOne ? "image/player_tank/playerTank_up.png" : "image/player_tank/player2Tank_up.png").getImage());
         this.setDirection(0);
     }
 
@@ -141,7 +141,7 @@ public class PlayerTank extends Tank {
         this.setDx(0);
         this.setDy(1);
         if (starLevel > 1) this.setDy(2);
-        setImage(new ImageIcon(isPlayerOne ? "image/playerTank_down.png" : "image/tank_power_down.png").getImage());
+        setImage(new ImageIcon(isPlayerOne ? "image/player_tank/playerTank_down.png" : "image/player_tank/player2Tank_down.png").getImage());
         this.setDirection(2);
     }
 

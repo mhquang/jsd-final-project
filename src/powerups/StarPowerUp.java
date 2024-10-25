@@ -10,10 +10,10 @@ package src.powerups;
 public class StarPowerUp extends PowerUp {
     public StarPowerUp(int x, int y) {
         super(x, y);
-        loadImage("image/powerup_star.png");
+        loadImage("image/power_ups/powerup_star.png");
         getImageDimensions();
         setType(8);
-        s = "image/powerup_star.png";
+        s = "image/power_ups/powerup_star.png";
     }
 
 }

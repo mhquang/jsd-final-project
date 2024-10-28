@@ -21,6 +21,8 @@ import java.awt.event.KeyEvent;
  */
 public class PlayerTank extends Tank {
 
+    private final int initialX;
+    private final int initialY;
     private long lastFired = 0;
     private boolean shield = false;
     private int starLevel = 0;
@@ -28,6 +30,8 @@ public class PlayerTank extends Tank {
 
     public PlayerTank(int x, int y, int health, boolean isPlayerOne) {
         super(x, y, health);
+        initialX = x;
+        initialY = y;
         this.isPlayerOne = isPlayerOne;
         loadImage(isPlayerOne ? "image/player_tank/playerTank_up.png" : "image/player_tank/player2Tank_up.png");
         getImageDimensions();
@@ -63,6 +67,14 @@ public class PlayerTank extends Tank {
         }
     }
 
+    public int getInitialX() {
+        return initialX;
+    }
+
+    public int getInitialY() {
+        return initialY;
+    }
+
     public void fire() {
         if (canFire()) {
             Bullet bullet = createBullet();
@@ -84,7 +96,7 @@ public class PlayerTank extends Tank {
     }
 
     private void handlePlayerTwoControls(int key, int time) {
-        if (key == KeyEvent.VK_F && (System.currentTimeMillis() - lastFired) > time) {
+        if (key == KeyEvent.VK_G && (System.currentTimeMillis() - lastFired) > time) {
             fire();
             lastFired = System.currentTimeMillis();
         } else if (key == KeyEvent.VK_A) {
@@ -99,7 +111,7 @@ public class PlayerTank extends Tank {
     }
 
     private void handlePlayerOneControls(int key, int time) {
-        if (key == KeyEvent.VK_SPACE && (System.currentTimeMillis() - lastFired) > time) {
+        if (key == KeyEvent.VK_L && (System.currentTimeMillis() - lastFired) > time) {
             fire();
             lastFired = System.currentTimeMillis();
         } else if (key == KeyEvent.VK_LEFT) {

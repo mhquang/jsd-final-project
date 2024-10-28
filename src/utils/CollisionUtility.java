@@ -2,7 +2,6 @@ package src.utils;
 
 import src.BlockType;
 import src.Board;
-import src.Map;
 import src.animation.*;
 import src.environments.Base;
 import src.environments.Block;
@@ -137,8 +136,7 @@ public class CollisionUtility {
     public static void checkCollisionBulletsTank(ArrayList<Bullet> bullets,
                                                  PlayerTank playerTank) {
         Rectangle r2 = playerTank.getBounds();
-        for (int x = 0; x < bullets.size(); x++) {
-            Bullet b = bullets.get(x);
+        for (Bullet b : bullets) {
             Rectangle r1 = b.getBounds();
             if (r1.intersects(r2) && b.isEnemy) {
                 b.setVisible(false);
@@ -232,8 +230,8 @@ public class CollisionUtility {
      * @param type
      */
     public static void resetTankPosition(PlayerTank atank, int type) {
-        atank.setX(13 * 16);
-        atank.setY(Map.level0.length * 16);
+        atank.setX(atank.getInitialX());
+        atank.setY(atank.getInitialY());
         atank.setShield(true);
         explosions.add(new TankShield(atank, 2));
         if (type == 1) {
@@ -241,7 +239,6 @@ public class CollisionUtility {
         } else {
             atank.setShield(false);
         }
-
     }
 
     /**

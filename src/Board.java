@@ -32,7 +32,7 @@ public class Board extends JPanel implements ActionListener {
     // Instance variable for the timer of the tank
     private Timer timer;
     private PlayerTank player1Tank, player2Tank;
-
+    private ArrayList<PlayerTank> playerTanks = new ArrayList<>();
     private ArrayList<NPCTank> enemy = new ArrayList<>();
     private ArrayList<Block> blocks = new ArrayList<>();
     private ArrayList<Animation> animations = new ArrayList<>();
@@ -55,14 +55,16 @@ public class Board extends JPanel implements ActionListener {
     private int numAI;
     private static final int goal = 10;
     public static int numEnemies = goal;
+    private boolean isTwoPlayerMode;
 
     /**
      * Constructor for the Board class
      *
      * @param theView GameView that represents the frame of the game
      */
-    public Board(GameView theView) {
+    public Board(GameView theView, boolean isTwoPlayerMode) {
         this.theView = theView;
+        this.isTwoPlayerMode = isTwoPlayerMode;
         timer = new Timer(DELAY, this);
         timer.start();
         initBoard();
@@ -72,6 +74,7 @@ public class Board extends JPanel implements ActionListener {
      * Initialize the board.
      */
     private void initBoard() {
+        System.out.println("2 Players Mode: " + isTwoPlayerMode);
         stage = 1;
         addKeyListener(new TAdapter());
         setFocusable(true);
@@ -79,11 +82,17 @@ public class Board extends JPanel implements ActionListener {
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         numAI = 0;
         player1Tank = new PlayerTank(INIT_PLAYER_X, INIT_PLAYER_Y, 5, true);
+        playerTanks.add(player1Tank);
 
+        if (isTwoPlayerMode) {
+            player2Tank = new PlayerTank(INIT_PLAYER_X + 7 * 16, INIT_PLAYER_Y, 5, false);
+            playerTanks.add(player2Tank);
+            System.out.println(playerTanks);
+        }
 
         initBlocks();
         CollisionUtility.loadCollisionUtility(blocks, animations);
-        BoardUtility.loadBoardUtility(enemy, blocks, animations, powerUps, player1Tank);
+        BoardUtility.loadBoardUtility(enemy, blocks, animations, powerUps, playerTanks);
     }
 
     /**
@@ -140,6 +149,11 @@ public class Board extends JPanel implements ActionListener {
         if (player1Tank.getHealth() == 0) {
             setEndGame();
         }
+        if (isTwoPlayerMode) {
+            if (player1Tank.getHealth() == 0 && player2Tank.getHealth() == 0) {
+                setEndGame();
+            }
+        }
     }
 
     /**
@@ -155,7 +169,23 @@ public class Board extends JPanel implements ActionListener {
         if (player1Tank.isVisible()) {
             g.drawImage(player1Tank.getImage(), player1Tank.getX(), player1Tank.getY(), this);
         }
+
+        if (isTwoPlayerMode) {
+            if (player2Tank.isVisible()) {
+                g.drawImage(player2Tank.getImage(), player2Tank.getX(), player2Tank.getY(), this);
+            }
+            ArrayList<Bullet> bulletsFromPlayer2 = new ArrayList<>(player2Tank.getBullets());
+
+            for (Bullet b : bulletsFromPlayer2) {
+                if (b.isVisible()) {
+                    g.drawImage(b.getImage(), b.getX(), b.getY(), this);
+                }
+            }
+
+        }
+
         ArrayList<Bullet> bullets = new ArrayList<>(player1Tank.getBullets());
+
         for (NPCTank NPCTank : enemy) {
             bullets.addAll(NPCTank.getBullets());
         }
@@ -295,7 +325,7 @@ public class Board extends JPanel implements ActionListener {
 
                 initBlocks();
                 CollisionUtility.loadCollisionUtility(blocks, animations);
-                BoardUtility.loadBoardUtility(enemy, blocks, animations, powerUps, player1Tank);
+                BoardUtility.loadBoardUtility(enemy, blocks, animations, powerUps, playerTanks);
             }
         }
     }
@@ -400,7 +430,6 @@ public class Board extends JPanel implements ActionListener {
      */
     private void updateBulletsTank() {
         BoardUtility.updateBulletsTank();
-
     }
 
     private void updateBulletsTankAI() {
@@ -511,6 +540,9 @@ public class Board extends JPanel implements ActionListener {
 
         updateSprites();
         resetTankPosition(player1Tank, 2);
+        if (isTwoPlayerMode) {
+            resetTankPosition(player2Tank, 2);
+        }
         loadCollisionUtility(blocks, animations);
 
     }
@@ -533,12 +565,17 @@ public class Board extends JPanel implements ActionListener {
         @Override
         public void keyReleased(KeyEvent e) {
             player1Tank.keyReleased(e);
-
+            if (isTwoPlayerMode) {
+                player2Tank.keyReleased(e);
+            }
         }
 
         @Override
         public void keyPressed(KeyEvent e) {
             player1Tank.keyPressed(e);
+            if (isTwoPlayerMode) {
+                player2Tank.keyPressed(e);
+            }
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 if (!pause) {
                     SoundUtility.pause();
@@ -547,5 +584,4 @@ public class Board extends JPanel implements ActionListener {
             }
         }
     }
-
 }

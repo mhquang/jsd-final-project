@@ -145,8 +145,10 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_SPACE) {
             if (menuStatus) {
                 if (selectedItem == 0) {
-                    loadBoard();
+                    loadBoard(false);
                 } else if (selectedItem == 1) {
+                    // 2 players mode
+                    loadBoard(true);
                     System.out.println(menuItems[1]);
                 } else if (selectedItem == 2) {
                     System.out.println(menuItems[2]);
@@ -161,7 +163,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
     /**
      * Load the board to the game panel on the JFrame of the game.
      */
-    public void loadBoard() {
+    public void loadBoard(boolean isTwoPlayerMode) {
         // Change the menu status
         menuStatus = false;
 
@@ -169,7 +171,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
         theView.getGamePanel().removeAll();
 
         // Create and add a new Board panel
-        Board panel = new Board(theView);
+        Board panel = new Board(theView, isTwoPlayerMode);
         theView.getGamePanel().add(panel);
 
         // Refresh and repaint the panel

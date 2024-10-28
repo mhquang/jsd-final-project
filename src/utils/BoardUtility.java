@@ -18,7 +18,7 @@ public class BoardUtility {
     private static ArrayList<Block> blocks = new ArrayList<>();
     private static ArrayList<Animation> animations = new ArrayList<>();
     private static ArrayList<PowerUp> powerUps = new ArrayList<>();
-    private static PlayerTank playerTank;
+    private static ArrayList<PlayerTank> playerTanks = new ArrayList<>();
 
     /**
      * Constructor for the BoardUtility class
@@ -32,12 +32,12 @@ public class BoardUtility {
     public static void loadBoardUtility(ArrayList<NPCTank> enemy1,
                                         ArrayList<Block> blocks1,
                                         ArrayList<Animation> animations1,
-                                        ArrayList<PowerUp> powerUps1, PlayerTank playerTank1) {
+                                        ArrayList<PowerUp> powerUps1, ArrayList<PlayerTank> playerTank1) {
         enemy = enemy1;
         blocks = blocks1;
         animations = animations1;
         powerUps = powerUps1;
-        playerTank = playerTank1;
+        playerTanks = playerTank1;
     }
 
     /**
@@ -48,42 +48,46 @@ public class BoardUtility {
             PowerUp p = powerUps.get(i);
             p.updateAnimation();
             BlockType type = BlockType.getTypeFromInt(p.getType());
-            Rectangle r1 = playerTank.getBounds();
-            Rectangle r2 = p.getBounds();
 
             if (System.currentTimeMillis() - p.getLoadTime() > 10000) {
                 powerUps.remove(i);
             }
 
-            if (r1.intersects(r2)) {
-                powerUps.remove(i);
-                SoundUtility.powerupPick();
-                if (type.equals(BlockType.TANK)) {
-                    playerTank.upHealth();
-                } else if (type.equals(BlockType.SHIELD)) {
-                    playerTank.setShield(true);
-                    animations.add(new TankShield(playerTank, 1));
-                } else if (type.equals(BlockType.SHOVEL)) {
+            for (PlayerTank playerTank : playerTanks) {
+                Rectangle r1 = playerTank.getBounds();
+                Rectangle r2 = p.getBounds();
 
-                } else if (type.equals(BlockType.STAR)) {
-                    playerTank.upStarLevel();
-                } else if (type.equals(BlockType.CLOCK)) {
-                    for (NPCTank npcTank : enemy) {
-                        npcTank.frozen = true;
-                        npcTank.frozenStartTime = System.currentTimeMillis();
-                    }
-                } else if (type.equals(BlockType.BOMB)) {
-                    for (int x = 0; x < enemy.size(); x++) {
-                        enemy.get(x).setVisible(false);
-                        for (NPCTank ai : enemy) {
-                            CollisionUtility.incrementNum(ai);
+                if (r1.intersects(r2)) {
+                    powerUps.remove(i);
+                    SoundUtility.powerupPick();
+                    if (type.equals(BlockType.TANK)) {
+                        playerTank.upHealth();
+                    } else if (type.equals(BlockType.SHIELD)) {
+                        playerTank.setShield(true);
+                        animations.add(new TankShield(playerTank, 1));
+                    } else if (type.equals(BlockType.SHOVEL)) {
+
+                    } else if (type.equals(BlockType.STAR)) {
+                        playerTank.upStarLevel();
+                    } else if (type.equals(BlockType.CLOCK)) {
+                        for (NPCTank npcTank : enemy) {
+                            npcTank.frozen = true;
+                            npcTank.frozenStartTime = System.currentTimeMillis();
                         }
-                        Board.decrementEnemies(enemy.size());
-                        animations.add(new ExplodingTank(enemy.get(x).getX(),
-                                enemy.get(x).getY()));
+                    } else if (type.equals(BlockType.BOMB)) {
+                        for (int x = 0; x < enemy.size(); x++) {
+                            enemy.get(x).setVisible(false);
+                            for (NPCTank ai : enemy) {
+                                CollisionUtility.incrementNum(ai);
+                            }
+                            Board.decrementEnemies(enemy.size());
+                            animations.add(new ExplodingTank(enemy.get(x).getX(),
+                                    enemy.get(x).getY()));
+                        }
                     }
                 }
             }
+
         }
 
     }
@@ -170,7 +174,7 @@ public class BoardUtility {
                 Bullet b = bullets.get(i);
                 if (b.isVisible()) {
                     b.move();
-                } else  {
+                } else {
                     bullets.remove(i);
                 }
             }
@@ -181,16 +185,19 @@ public class BoardUtility {
      * Update bullets and tank on the Board.
      */
     public static void updateBulletsTank() {
-        ArrayList<Bullet> bullets = playerTank.getBullets();
+        for (PlayerTank playerTank : playerTanks) {
+            ArrayList<Bullet> bullets = playerTank.getBullets();
 
-        for (int i = 0; i < bullets.size(); i++) {
-            Bullet b = bullets.get(i);
-            if (b.isVisible()) {
-                b.move();
-            } else {
-                bullets.remove(i);
+            for (int i = 0; i < bullets.size(); i++) {
+                Bullet b = bullets.get(i);
+                if (b.isVisible()) {
+                    b.move();
+                } else {
+                    bullets.remove(i);
+                }
             }
         }
+
     }
 
     /**
@@ -228,24 +235,27 @@ public class BoardUtility {
      * Update tank on the Board.
      */
     public static void updateTank() {
-        if (playerTank.isVisible()) {
-            playerTank.move();
+        for (PlayerTank playerTank : playerTanks) {
+            if (playerTank.isVisible()) {
+                playerTank.move();
+            }
         }
+
     }
 
     /**
      * Check for collisions on the board.
      */
     public static void checkCollisions() {
-        ArrayList<Bullet> bullets = new ArrayList<>(playerTank.getBullets());
-        for (NPCTank NPCTank : enemy) {
-            bullets.addAll(NPCTank.getBullets());
+        for (PlayerTank playerTank : playerTanks) {
+            ArrayList<Bullet> bullets = new ArrayList<>(playerTank.getBullets());
+            for (NPCTank NPCTank : enemy) {
+                bullets.addAll(NPCTank.getBullets());
+            }
+            CollisionUtility.checkCollisionBulletsBlocks(bullets, blocks);
+            CollisionUtility.checkCollisionBulletsTank(bullets, playerTank);
+            CollisionUtility.checkCollisionBulletsTankAI(bullets, enemy);
+            CollisionUtility.checkCollisionTankTankAI(enemy, playerTank);
         }
-        CollisionUtility.checkCollisionBulletsBlocks(bullets, blocks);
-        CollisionUtility.checkCollisionBulletsTank(bullets, playerTank);
-        CollisionUtility.checkCollisionBulletsTankAI(bullets, enemy);
-        CollisionUtility.checkCollisionTankTankAI(enemy, playerTank);
-
     }
-
 }

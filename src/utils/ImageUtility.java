@@ -1,13 +1,13 @@
 package src.utils;
 
-import java.awt.Image;
-import javax.swing.ImageIcon;
+import javax.swing.*;
+import java.awt.*;
 
 public class ImageUtility {
     // Instance variables for the images
     private final Image lives, flagIcon, enemyIcon;
     private final Image arrow, tankBasic, tankFast, tankPower, tankArmor;
-    private final Image background, tank;
+    private final Image background, tank, player1TankIcon, player2TankIcon;
     private static ImageUtility instance;
 
     public static ImageUtility getInstance() {
@@ -28,6 +28,8 @@ public class ImageUtility {
         tankArmor = loadImage("image/npc_tanks/tank_armor_up.png");
         background = loadImage("image/title.png");
         tank = loadImage("image/player_tank/playerTank_right.png");
+        player1TankIcon = loadImage("image/player_tank/playerTank.png");
+        player2TankIcon = loadImage("image/player_tank/player2Tank.png");
     }
 
     public Image loadImage(String imageAddress) {
@@ -74,6 +76,14 @@ public class ImageUtility {
 
     public Image getTank() {
         return tank;
+    }
+
+    public Image getPlayer1TankIcon() {
+        return player1TankIcon;
+    }
+
+    public Image getPlayer2TankIcon() {
+        return player2TankIcon;
     }
 
 }

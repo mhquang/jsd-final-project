@@ -38,7 +38,6 @@ public class Board extends JPanel implements ActionListener {
     private ArrayList<Animation> animations = new ArrayList<>();
     private ArrayList<PowerUp> powerUps = new ArrayList<>();
     private final ImageUtility imageInstance = ImageUtility.getInstance();
-
     private final int INIT_PLAYER_X = 13 * 16;
     private final int INIT_PLAYER_Y = Map.level0.length * 16;
     private final int B_WIDTH = Map.BOARD_WIDTH;
@@ -218,24 +217,33 @@ public class Board extends JPanel implements ActionListener {
      * @param g Graphics
      */
     private void drawEdge(Graphics g) {
+        Font font = loadFont();
+        g.setFont(font);
+
         // Draw enemies
         drawEnemies(g, numEnemies);
 
         // Draw lives
-        String ipText = "P1";
-        int health = player1Tank.getHealth();
-        Font font = loadFont();
-        g.setFont(font);
-        g.drawString(ipText, initX * 16, 17 * 16);
+        int player1Health = player1Tank.getHealth();
 
-        Image liveIcon = imageInstance.getLives();
-        g.drawImage(liveIcon, initX * 16, 17 * 16, this);
-        g.drawString(String.valueOf(Math.max(health, 0)), (initX + 1) * 16,
-                18 * 16);
+        Image player1TankImage = imageInstance.getPlayer1TankIcon();
+        g.drawImage(player1TankImage, initX * 16 + 1, 13 * 16, this);
+
+        g.drawString(String.valueOf(Math.max(player1Health, 0)), (initX + 1) * 16 + 3, 14 * 16);
+
+        if (isTwoPlayerMode) {
+            int player2Health = player2Tank.getHealth();
+
+            Image player2TankImage = imageInstance.getPlayer2TankIcon();
+            g.drawImage(player2TankImage, initX * 16 + 1, 15 * 16, this);
+
+            g.drawString(String.valueOf(Math.max(player2Health, 0)), (initX + 1) * 16 + 3, 16 * 16);
+        }
 
         // Draw stages
         Image flagIcon = imageInstance.getFlagIcon();
         g.drawImage(flagIcon, initX * 16, 22 * 16, this);
+
         g.drawString(String.valueOf(stage), (initX + 1) * 16, 25 * 16);
     }
 
@@ -375,6 +383,14 @@ public class Board extends JPanel implements ActionListener {
                     NPCTank.actionNormal(this.player1Tank);
                 } else if ("hard".equals(NPCTank.getDifficulty())) {
                     NPCTank.actionHard(this.player1Tank);
+                }
+
+                if (isTwoPlayerMode) {
+                    if ("normal".equals(NPCTank.getDifficulty())) {
+                        NPCTank.actionNormal(this.player2Tank);
+                    } else if ("hard".equals(NPCTank.getDifficulty())) {
+                        NPCTank.actionHard(this.player2Tank);
+                    }
                 }
             }
         }

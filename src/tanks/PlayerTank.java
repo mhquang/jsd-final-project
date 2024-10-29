@@ -95,7 +95,7 @@ public class PlayerTank extends Tank {
         }
     }
 
-    private void handlePlayerTwoControls(int key, int time) {
+    private void handlePlayerOneControls(int key, int time) {
         if (key == KeyEvent.VK_G && (System.currentTimeMillis() - lastFired) > time) {
             fire();
             lastFired = System.currentTimeMillis();
@@ -110,7 +110,7 @@ public class PlayerTank extends Tank {
         }
     }
 
-    private void handlePlayerOneControls(int key, int time) {
+    private void handlePlayerTwoControls(int key, int time) {
         if (key == KeyEvent.VK_L && (System.currentTimeMillis() - lastFired) > time) {
             fire();
             lastFired = System.currentTimeMillis();
@@ -169,13 +169,13 @@ public class PlayerTank extends Tank {
     }
 
     private void handlePlayerOneKeyReleased(int key) {
-        if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_RIGHT) this.setDx(0);
-        if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) this.setDy(0);
+        if (key == KeyEvent.VK_A || key == KeyEvent.VK_D) this.setDx(0);
+        if (key == KeyEvent.VK_W || key == KeyEvent.VK_S) this.setDy(0);
     }
 
     private void handlePlayerTwoKeyReleased(int key) {
-        if (key == KeyEvent.VK_A || key == KeyEvent.VK_D) this.setDx(0);
-        if (key == KeyEvent.VK_W || key == KeyEvent.VK_S) this.setDy(0);
+        if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_RIGHT) this.setDx(0);
+        if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) this.setDy(0);
     }
 
     private boolean canFire() {

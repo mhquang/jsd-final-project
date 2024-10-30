@@ -7,7 +7,7 @@ public class ImageUtility {
     // Instance variables for the images
     private final Image lives, flagIcon, enemyIcon;
     private final Image arrow, tankBasic, tankFast, tankPower, tankArmor;
-    private final Image background, tank, player1TankIcon, player2TankIcon;
+    private final Image background, gameOver, tank, player1TankIcon, player2TankIcon;
     private static ImageUtility instance;
 
     public static ImageUtility getInstance() {
@@ -30,6 +30,7 @@ public class ImageUtility {
         tank = loadImage("image/player_tank/playerTank_right.png");
         player1TankIcon = loadImage("image/player_tank/playerTank.png");
         player2TankIcon = loadImage("image/player_tank/player2Tank.png");
+        gameOver = loadImage("image/game_over.png");
     }
 
     public Image loadImage(String imageAddress) {
@@ -86,4 +87,7 @@ public class ImageUtility {
         return player2TankIcon;
     }
 
+    public Image getGameOver() {
+        return gameOver;
+    }
 }

@@ -36,21 +36,18 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
     }
 
     private void addTimer() {
-        Timer timer = new Timer(10, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                yPos += direction;
-                if (yPos == stopYPos) {
-                    direction = 0;
-                } else if (yPos + title.getHeight(null) > getHeight()) {
-                    yPos = getHeight() - title.getHeight(
-                            null);
-                } else if (yPos < 0) {
-                    yPos = 0;
-                    direction *= -1;
-                }
-                repaint();
+        Timer timer = new Timer(10, e -> {
+            yPos += direction;
+            if (yPos == stopYPos) {
+                direction = 0;
+            } else if (yPos + title.getHeight(null) > getHeight()) {
+                yPos = getHeight() - title.getHeight(
+                        null);
+            } else if (yPos < 0) {
+                yPos = 0;
+                direction *= -1;
             }
+            repaint();
         });
         timer.setRepeats(true);
         timer.setCoalesce(true);

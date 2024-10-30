@@ -3,25 +3,17 @@ package src;
 import src.utils.CollisionUtility;
 import src.utils.ImageUtility;
 
-import static src.Menu.loadFont;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import javax.swing.JButton;
-import javax.swing.JPanel;
 
-/**
- * A class for showing the totalScore
- *
- * @author Tongyu
- */
+import static src.Menu.loadFont;
+
 public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
 
     /**
@@ -52,7 +44,7 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
         restartButton.setText("Restart");
         this.add(restartButton);
         restartButton.setBounds(400, 400,
-                                100, 30);
+                100, 30);
         restartButton.addActionListener(this);
     }
 
@@ -67,49 +59,57 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
         stage = Board.getStage();
         super.paintComponent(g);
         Font font = loadFont();
-        ArrayList<Image> tankList = new ArrayList<>(
-                Arrays.asList(imageInstance.getTankBasic(),
-                              imageInstance.getTankFast(),
-                              imageInstance.getTankPower(),
-                              imageInstance.getTankArmor()));
+        ArrayList<Image> tankList = new ArrayList<>(Arrays.asList(
+                imageInstance.getTankBasic(),
+                imageInstance.getTankFast(),
+                imageInstance.getTankPower(),
+                imageInstance.getTankArmor()));
 
-        // Display High totalScore
+        int panelWidth = getWidth();
+        int xCenterShift = panelWidth / 2;
+
+        // Stage and Player
         g.setFont(font);
         g.setColor(Color.WHITE);
-        g.drawString("STAGE   " + String.valueOf(stage), 97 + SHIFT, 60);
-
+        g.drawString("STAGE   " + stage, xCenterShift - 60, 60);
         g.setColor(Color.RED);
-        g.drawString("1-PLAYER", 37 + SHIFT, 95);
+        g.drawString("1-PLAYER", xCenterShift - 120, 95);
 
-        g.setColor(Color.orange);
-        g.drawString(String.valueOf(totalScore), 121 + SHIFT, 130);
+        // Total Score Display
+        g.setColor(Color.ORANGE);
+        g.drawString(String.valueOf(totalScore), xCenterShift - 20, 130);
+
+        // Display Tank Images and Scores
+        int baseY = 160; // Starting y position for the first tank
+        int yIncrement = 45; // Space between each row
 
         for (int i = 0; i < 4; i++) {
-            g.drawImage(tankList.get(i), 226 + SHIFT, 160 + (i * 45), this);
-            g.drawImage(imageInstance.getArrow(), 206 + SHIFT, 168 + (i * 45),
-                        this);
-        }
-        for (int i = 0; i < 4; i++) {
+            int yPosition = baseY + (i * yIncrement);
+
+            // Draw each tank image centered
+            g.drawImage(tankList.get(i), xCenterShift + 20, yPosition, this);
+
+            // Draw arrow next to tank image
+            g.drawImage(imageInstance.getArrow(), xCenterShift, yPosition + 8, this);
+
+            // Display tank scores to the left, centered in column
             g.setColor(Color.WHITE);
-            g.drawString(String.valueOf(tankScoreList[i]), 55 + SHIFT,
-                         180 + (i * 45));
-            g.drawString("PTS", 115 + SHIFT, 180 + (i * 45));
+            g.drawString(String.valueOf(tankScoreList[i]), xCenterShift - 150, yPosition + 20);
+            g.drawString("PTS", xCenterShift - 90, yPosition + 20);
+
+            // Display tank numbers to the right of images
+            g.drawString(String.valueOf(tankNumList[i]), xCenterShift + 100, yPosition + 20);
         }
 
-        for (int i = 0; i < 4; i++) {
-            g.setColor(Color.WHITE);
-            g.drawString(String.valueOf(tankNumList[i]), 180 + SHIFT,
-                         180 + (i * 45));
-        }
-
-        // total underline
-        g.drawLine(170, 330, 307, 330);
-
-        g.drawString("TOTAL", 85 + SHIFT, 355);
-        g.drawString(String.valueOf(totalTankNum), 180 + SHIFT, 355);
+        // Draw underline and total score at the bottom
+        int totalY = baseY + (4 * yIncrement) + 10;
+        g.drawLine(xCenterShift - 80, totalY, xCenterShift + 70, totalY);
+        g.drawString("TOTAL", xCenterShift - 150, totalY + 25);
+        g.drawString(String.valueOf(totalTankNum), xCenterShift + 100, totalY + 25);
         g.setFont(font);
         g.setColor(Color.WHITE);
     }
+
 
     /**
      * Load the totalScore of the player from the CollisionUtility class.
@@ -134,7 +134,7 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
      * Restart the game, load the menu and reset player's totalScore.
      */
     public void restart() {
-        Board.gameOver = false;
+        Board.restartGame();
         CollisionUtility.resetScore();
         loadMenu();
     }

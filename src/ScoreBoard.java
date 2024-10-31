@@ -22,7 +22,6 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
     private GameView theView;
     private int stage, totalTankNum;
     private int totalScore = 0;
-    private final int SHIFT = 80;
     private JButton restartButton;
     private final ImageUtility imageInstance = ImageUtility.getInstance();
     private int[] tankScoreList = {0, 0, 0, 0};
@@ -95,17 +94,17 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
             // Display tank scores to the left, centered in column
             g.setColor(Color.WHITE);
             g.drawString(String.valueOf(tankScoreList[i]), xCenterShift - 150, yPosition + 20);
-            g.drawString("PTS", xCenterShift - 90, yPosition + 20);
+            g.drawString("PTS", xCenterShift - 70, yPosition + 20);
 
             // Display tank numbers to the right of images
             g.drawString(String.valueOf(tankNumList[i]), xCenterShift + 100, yPosition + 20);
         }
 
         // Draw underline and total score at the bottom
-        int totalY = baseY + (4 * yIncrement) + 10;
+        int totalY = baseY + (4 * yIncrement);
         g.drawLine(xCenterShift - 80, totalY, xCenterShift + 70, totalY);
-        g.drawString("TOTAL", xCenterShift - 150, totalY + 25);
-        g.drawString(String.valueOf(totalTankNum), xCenterShift + 100, totalY + 25);
+        g.drawString("TOTAL", xCenterShift - 150, totalY + 30);
+        g.drawString(String.valueOf(totalTankNum), xCenterShift + 100, totalY + 30);
         g.setFont(font);
         g.setColor(Color.WHITE);
     }

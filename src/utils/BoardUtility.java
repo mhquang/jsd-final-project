@@ -2,6 +2,7 @@ package src.utils;
 
 import src.BlockType;
 import src.Board;
+import src.Menu;
 import src.animation.*;
 import src.environments.Block;
 import src.powerups.*;
@@ -9,8 +10,12 @@ import src.tanks.NPCTank;
 import src.tanks.PlayerTank;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BoardUtility {
 
@@ -257,5 +262,26 @@ public class BoardUtility {
             CollisionUtility.checkCollisionBulletsTankAI(bullets, enemy);
             CollisionUtility.checkCollisionTankTankAI(enemy, playerTank);
         }
+    }
+
+    /**
+     * Load the game font to the program
+     *
+     * @return font of the game
+     */
+    public static Font loadFont() {
+        Font font = null;
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT,
+                    new File("prstart.ttf"));
+            font = font.deriveFont(java.awt.Font.PLAIN, 15);
+            GraphicsEnvironment ge
+                    = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(font);
+
+        } catch (FontFormatException | IOException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return font;
     }
 }

@@ -1,5 +1,6 @@
 package src;
 
+import src.utils.BoardUtility;
 import src.utils.CollisionUtility;
 import src.utils.ImageUtility;
 
@@ -12,8 +13,6 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static src.Menu.loadFont;
-
 public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
 
     /**
@@ -22,10 +21,11 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
     private GameView theView;
     private int stage, totalTankNum;
     private int totalScore = 0;
-    private JButton restartButton;
     private final ImageUtility imageInstance = ImageUtility.getInstance();
     private int[] tankScoreList = {0, 0, 0, 0};
     private int[] tankNumList = {0, 0, 0, 0};
+    private int selectedItem = 0;  // Tracks which menu item is selected
+    private final String[] menuItems = {"RESTART", "MAIN MENU", "EXIT"};
 
     /**
      * Constructor for the ScoreBoard. A restart button is added for the player
@@ -38,13 +38,7 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
         this.setFocusable(true);
         theView.setForeground(Color.BLACK);
         this.setLayout(null);
-
-        restartButton = new JButton();
-        restartButton.setText("Restart");
-        this.add(restartButton);
-        restartButton.setBounds(400, 400,
-                100, 30);
-        restartButton.addActionListener(this);
+        this.addKeyListener(this);
     }
 
     /**
@@ -54,10 +48,15 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
      */
     @Override
     public void paintComponent(Graphics g) {
-        loadScore();
-        stage = Board.getStage();
         super.paintComponent(g);
-        Font font = loadFont();
+        loadScore();
+
+        Font font = BoardUtility.loadFont();
+        g.setFont(font);
+        g.setColor(Color.WHITE);
+
+        // Draw scoreboard items, e.g., total score, tank types, etc. (unchanged)
+        stage = Board.getStage();
         ArrayList<Image> tankList = new ArrayList<>(Arrays.asList(
                 imageInstance.getTankBasic(),
                 imageInstance.getTankFast(),
@@ -67,46 +66,53 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
         int panelWidth = getWidth();
         int xCenterShift = panelWidth / 2;
 
-        // Stage and Player
-        g.setFont(font);
-        g.setColor(Color.WHITE);
         g.drawString("STAGE   " + stage, xCenterShift - 60, 60);
-        g.setColor(Color.RED);
-        g.drawString("1-PLAYER", xCenterShift - 120, 95);
+//        g.setColor(Color.RED);
+//        g.drawString("1-PLAYER", xCenterShift - 120, 95);
 
-        // Total Score Display
-        g.setColor(Color.ORANGE);
-        g.drawString(String.valueOf(totalScore), xCenterShift - 20, 130);
+//        g.setColor(Color.ORANGE);
+//        g.drawString(String.valueOf(totalScore), xCenterShift - 20, 130);
 
-        // Display Tank Images and Scores
-        int baseY = 160; // Starting y position for the first tank
-        int yIncrement = 45; // Space between each row
+        int baseY = 95;
+        int yIncrement = 45;
 
         for (int i = 0; i < 4; i++) {
             int yPosition = baseY + (i * yIncrement);
-
-            // Draw each tank image centered
-            g.drawImage(tankList.get(i), xCenterShift + 20, yPosition, this);
-
-            // Draw arrow next to tank image
-            g.drawImage(imageInstance.getArrow(), xCenterShift, yPosition + 8, this);
-
-            // Display tank scores to the left, centered in column
             g.setColor(Color.WHITE);
-            g.drawString(String.valueOf(tankScoreList[i]), xCenterShift - 150, yPosition + 20);
-            g.drawString("PTS", xCenterShift - 70, yPosition + 20);
 
-            // Display tank numbers to the right of images
-            g.drawString(String.valueOf(tankNumList[i]), xCenterShift + 100, yPosition + 20);
+            g.drawImage(tankList.get(i), xCenterShift - 150, yPosition, this);
+            g.drawString(String.valueOf(tankNumList[i]), xCenterShift - 80, yPosition + 20);
+            g.drawImage(imageInstance.getArrow(), xCenterShift - 20, yPosition + 8, this);
+            g.drawString(String.valueOf(tankScoreList[i]), xCenterShift + 20, yPosition + 20);
+            g.drawString("PTS", xCenterShift + 120, yPosition + 20);
         }
 
-        // Draw underline and total score at the bottom
         int totalY = baseY + (4 * yIncrement);
         g.drawLine(xCenterShift - 80, totalY, xCenterShift + 70, totalY);
-        g.drawString("TOTAL", xCenterShift - 150, totalY + 30);
-        g.drawString(String.valueOf(totalTankNum), xCenterShift + 100, totalY + 30);
-        g.setFont(font);
-        g.setColor(Color.WHITE);
+        g.drawString("TOTAL", xCenterShift - 200, totalY + 30);
+        g.drawString(String.valueOf(totalTankNum), xCenterShift - 80, totalY + 30);
+        g.drawString("PTS", xCenterShift + 120, totalY + 30);
+        g.setColor(Color.ORANGE);
+        g.drawString(String.valueOf(totalScore), xCenterShift + 20, totalY + 30);
+
+
+        // Draw horizontal menu
+        int menuY = totalY + 150; // Y position below the scoreboard
+        int spacing = 50; // Horizontal spacing between menu items
+
+        // Calculate total width of the menu
+        int menuWidth = 0;
+        for (String item : menuItems) {
+            menuWidth += g.getFontMetrics().stringWidth(item) + spacing;
+        }
+        menuWidth -= spacing; // Remove last extra spacing
+
+        int xPosition = xCenterShift - menuWidth / 2; // Start position for first item
+        for (int i = 0; i < menuItems.length; i++) {
+            g.setColor(i == selectedItem ? Color.RED : Color.WHITE); // Highlight selected item
+            g.drawString(menuItems[i], xPosition, menuY);
+            xPosition += g.getFontMetrics().stringWidth(menuItems[i]) + spacing; // Move x position to the right
+        }
     }
 
 
@@ -114,6 +120,9 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
      * Load the totalScore of the player from the CollisionUtility class.
      */
     public void loadScore() {
+        totalScore = 0; // Reset total score before recalculating
+        totalTankNum = 0; // Reset total tank count before recalculating
+
         for (int i = 0; i < 4; i++) {
             int[] enemyTankNum = CollisionUtility.getEnemyTankNum();
             tankNumList[i] = enemyTankNum[i];
@@ -135,14 +144,6 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
     public void restart() {
         Board.restartGame();
         CollisionUtility.resetScore();
-        loadMenu();
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == restartButton) {
-            restart();
-        }
     }
 
     /**
@@ -151,32 +152,40 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
      */
     private void loadMenu() {
         theView.getGamePanel().removeAll();
-        Menu menu = new Menu(theView);
-        menu.revalidate();
-        menu.repaint();
+        Menu menu = new Menu(theView, 50);
+        menu.setBackFromScoreBoard(true);
         theView.getGamePanel().add(menu);
         menu.requestFocusInWindow();
-        theView.setVisible(true);
+        theView.revalidate();
+        theView.repaint();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            loadMenu();
-        }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            loadMenu();
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
+            selectedItem = (selectedItem + 1) % menuItems.length;
+            repaint();
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
+            selectedItem = (selectedItem - 1 + menuItems.length) % menuItems.length;
+            repaint();
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_SPACE) {
+            switch (selectedItem) {
+                case 0 -> restart();
+                case 1 -> loadMenu();
+                case 2 -> System.out.println(menuItems[2]);
+            }
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            loadMenu();
-        }
     }
 }

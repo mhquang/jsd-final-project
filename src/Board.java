@@ -19,7 +19,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-import static src.Menu.loadFont;
 import static src.utils.CollisionUtility.loadCollisionUtility;
 import static src.utils.CollisionUtility.resetTankPosition;
 
@@ -75,7 +74,6 @@ public class Board extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
         if (!Menu.getMenuStatus() && pause) {
             return;
         }
@@ -263,7 +261,7 @@ public class Board extends JPanel implements ActionListener {
      * @param g Graphics
      */
     private void drawEdge(Graphics g) {
-        Font font = loadFont();
+        Font font = BoardUtility.loadFont();
         g.setFont(font);
 
         // Draw enemies

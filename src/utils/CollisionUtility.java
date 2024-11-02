@@ -22,8 +22,8 @@ public class CollisionUtility {
     public static int powerUpY = 0;
     private static ArrayList<Block> blocks;
     private static ArrayList<Animation> explosions;
-    // Instance variable that tracks the number of enemy tanks being destroyed
     private static int[] enemyTankNum = {0, 0, 0, 0};
+    private static final SoundUtility soundUtility = SoundUtility.getInstance();
 
     /**
      * Load blocks and explosion animation from the input array list
@@ -68,13 +68,13 @@ public class CollisionUtility {
             Base b = (Base) block;
             b.gameOver = true;
             explosions.add(new ExplodingTank(block.getX(), block.getY()));
-            SoundUtility.explosion2();
+            soundUtility.explosion2();
             Board.setEndGame();
-            SoundUtility.gameOver();
+            soundUtility.gameOver();
 
         }
         if (block.getHealth() == 0) {
-            SoundUtility.explosion2();
+            soundUtility.explosion2();
             block.setVisible(false);
             explosions.add(new Explosion(block.getX(), block.getY()));
 
@@ -120,7 +120,7 @@ public class CollisionUtility {
                 Rectangle r2 = aBlock.getBounds();
 
                 if (r1.intersects(r2)) {
-                    SoundUtility.BulletHitBrick();
+                    soundUtility.bulletHitBrick();
                     CollisionBulletsBlocksHelper(b, aBlock);
                 }
             }
@@ -141,12 +141,12 @@ public class CollisionUtility {
             if (r1.intersects(r2) && b.isEnemy) {
                 b.setVisible(false);
                 if (!playerTank.isShield()) {
-                    SoundUtility.explosion1();
+                    soundUtility.explosion1();
                     explosions.add(new ExplodingTank(playerTank.getX(), playerTank.getY()));
                     playerTank.downHealth();
                     resetTankPosition(playerTank, 1);
                 } else {
-                    SoundUtility.BulletHitTank();
+                    soundUtility.bulletHitTank();
                 }
             }
         }
@@ -171,7 +171,7 @@ public class CollisionUtility {
                 if (r1.intersects(r2) && !b.isEnemy) {
                     NPCTank.decreaseHP();
                     b.setVisible(false);
-                    SoundUtility.BulletHitTank();
+                    soundUtility.bulletHitTank();
                     if (NPCTank.getHealth() < 1) {
                         incrementNum(NPCTank);
                         if (NPCTank.hasPowerUp()) {
@@ -181,7 +181,7 @@ public class CollisionUtility {
                         NPCTank.setVisible(false);
                         Board.decrementEnemies(1);
                         explosions.add(new ExplodingTank(NPCTank.getX(), NPCTank.getY()));
-                        SoundUtility.explosion1();
+                        soundUtility.explosion1();
                     }
                 }
             }

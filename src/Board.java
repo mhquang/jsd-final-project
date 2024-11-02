@@ -31,7 +31,8 @@ public class Board extends JPanel implements ActionListener {
     private ArrayList<Block> blocks = new ArrayList<>();
     private ArrayList<Animation> animations = new ArrayList<>();
     private ArrayList<PowerUp> powerUps = new ArrayList<>();
-    private final ImageUtility imageInstance = ImageUtility.getInstance();
+    private static final ImageUtility imageInstance = ImageUtility.getInstance();
+    private static final SoundUtility soundUtility = SoundUtility.getInstance();
     private final int INIT_PLAYER_X = 13 * 16;
     private final int INIT_PLAYER_Y = Map.level0.length * 16;
     private final int B_WIDTH = Map.BOARD_WIDTH;
@@ -112,7 +113,7 @@ public class Board extends JPanel implements ActionListener {
      */
     public static void setEndGame() {
         System.out.println("Game Over Played");
-        SoundUtility.gameOver();
+        soundUtility.gameOver();
         gameOver = true;
     }
 
@@ -152,7 +153,7 @@ public class Board extends JPanel implements ActionListener {
      */
     private void initBlocks() {
         int[][] map = Map.getMap(stage);
-        SoundUtility.startStage();
+        soundUtility.startStage();
         int type;
         for (int x = 0; x < map.length; x++) {
             for (int y = 0; y < map[0].length; y++) {
@@ -526,7 +527,7 @@ public class Board extends JPanel implements ActionListener {
         scoreBoard.setBackground(Color.BLACK);
         theView.getGamePanel().add(scoreBoard);
         scoreBoard.requestFocusInWindow();
-        SoundUtility.statistics();
+        soundUtility.statistics();
         theView.setVisible(true);
     }
 
@@ -567,7 +568,7 @@ public class Board extends JPanel implements ActionListener {
             }
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 if (!pause) {
-                    SoundUtility.pause();
+                    soundUtility.pause();
                 }
                 pause = !pause;
             }

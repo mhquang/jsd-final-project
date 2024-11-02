@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class Menu extends JPanel implements ActionListener, KeyListener {
-    // Load the images from ImageUtility class
+    private static Menu instance;
     private Image title, tank;
     private final GameView theView;
     private int yPos;
@@ -33,6 +33,13 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
         this.setLayout(null);
         loadMenuImages();
         addTimer();
+    }
+
+    public static Menu getInstance(GameView theView, int yPos) {
+        if (instance == null) {
+            instance = new Menu(theView, yPos);
+        }
+        return instance;
     }
 
     /**

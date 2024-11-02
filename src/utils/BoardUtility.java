@@ -24,7 +24,7 @@ public class BoardUtility {
     private static ArrayList<Animation> animations = new ArrayList<>();
     private static ArrayList<PowerUp> powerUps = new ArrayList<>();
     private static ArrayList<PlayerTank> playerTanks = new ArrayList<>();
-
+    private static final SoundUtility soundUtility = SoundUtility.getInstance();
     /**
      * Constructor for the BoardUtility class
      *
@@ -64,7 +64,7 @@ public class BoardUtility {
 
                 if (r1.intersects(r2)) {
                     powerUps.remove(i);
-                    SoundUtility.powerupPick();
+                    soundUtility.powerupPick();
                     if (type.equals(BlockType.TANK)) {
                         playerTank.upHealth();
                     } else if (type.equals(BlockType.SHIELD)) {

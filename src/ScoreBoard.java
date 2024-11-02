@@ -152,7 +152,7 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
      */
     private void loadMenu() {
         theView.getGamePanel().removeAll();
-        Menu menu = new Menu(theView, 50);
+        Menu menu = Menu.getInstance(theView, 50);
         menu.setBackFromScoreBoard(true);
         theView.getGamePanel().add(menu);
         menu.requestFocusInWindow();

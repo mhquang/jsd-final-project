@@ -158,11 +158,42 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
                 } else if (selectedItem == 2) {
                     System.out.println(menuItems[2]);
                 } else if (selectedItem == 3) {
-                    System.out.println(menuItems[3]);
+                    showHelp();
                 }
 
             }
         }
+    }
+
+    private void showHelp() {
+        String helpMessage = "<html><body style='width: 300px; font-family: Arial, sans-serif; color: #333;'>" +
+                "<h1 style='color: #cc0000; text-align: center;'>Tank 1990</h1>" +
+                "<h2 style='color: #cc0000;'>Game Modes:</h2>" +
+                "<p>Choose between two modes:</p>" +
+                "<ul>" +
+                "<li><b>1 Player:</b> Control a single tank to battle against AI tanks.</li>" +
+                "<li><b>2 Players:</b> Play with a friend! Each player controls their own tank.</li>" +
+                "</ul>" +
+                "<h2 style='color: #cc0000;'>Player Controls:</h2>" +
+                "<h3 style='color: #cc0000;'>1 Player Mode</h3>" +
+                "<ul>" +
+                "<li>Move with: <b>WASD</b></li>" +
+                "<li>Shoot with: <b>G</b></li>" +
+                "</ul>" +
+                "<h3 style='color: #cc0000;'>2 Player Mode</h3>" +
+                "<ul>" +
+                "<li><b>Player 1:</b> Move with <b>WASD</b> | Shoot with <b>G</b></li>" +
+                "<li><b>Player 2:</b> Move with arrow keys | Shoot with <b>L</b></li>" +
+                "</ul>" +
+                "<h2 style='color: #cc0000;'>Objective:</h2>" +
+                "<p>Destroy enemy tanks and protect your base to win the game!</p>" +
+                "</body></html>";
+
+        JOptionPane.showMessageDialog(this,
+                helpMessage,
+                "Game Help",
+                JOptionPane.INFORMATION_MESSAGE);
+        this.requestFocusInWindow();
     }
 
     @Override

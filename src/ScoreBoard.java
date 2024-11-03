@@ -27,6 +27,7 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
     private int selectedItem = 0;  // Tracks which menu item is selected
     private final String[] menuItems = {"RESTART", "MAIN MENU", "EXIT"};
     private boolean previousMode;
+    private Board board;
 
     /**
      * Constructor for the ScoreBoard. A restart button is added for the player
@@ -34,8 +35,9 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
      *
      * @param theView GameView that represents the frame of the game
      */
-    public ScoreBoard(GameView theView, boolean previousMode) {
+    public ScoreBoard(GameView theView, Board board, boolean previousMode) {
         this.theView = theView;
+        this.board = board;
         this.previousMode = previousMode;
         this.setFocusable(true);
         theView.setForeground(Color.BLACK);
@@ -44,7 +46,7 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
     }
 
     /**
-     * Draw the scoreBorad with different types of enemies on the screen.
+     * Draw the scoreBoard with different types of enemies on the screen.
      *
      * @param g Graphics
      */
@@ -69,11 +71,6 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
         int xCenterShift = panelWidth / 2;
 
         g.drawString("STAGE   " + stage, xCenterShift - 60, 60);
-//        g.setColor(Color.RED);
-//        g.drawString("1-PLAYER", xCenterShift - 120, 95);
-
-//        g.setColor(Color.ORANGE);
-//        g.drawString(String.valueOf(totalScore), xCenterShift - 20, 130);
 
         int baseY = 95;
         int yIncrement = 45;
@@ -144,27 +141,26 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
      * Restart the game, load the menu and reset player's totalScore.
      */
     public void restart() {
-        Board.restartGame();
-        // Remove all components to clear the previous Board
+        board.restart();
+
+        if (board != null) {
+            board.stopTimers();
+        }
         theView.getGamePanel().removeAll();
 
-        // Reset scores
+        // Reset scores and create new board
         CollisionUtility.resetScore();
+        board = new Board(theView, previousMode);
 
-        // Create and add a new Board panel
-        Board panel = new Board(theView, previousMode);
-        theView.getGamePanel().add(panel);
+        // Add new board to the game panel
+        theView.getGamePanel().add(board);
 
-        // Refresh and repaint the panel
-        panel.revalidate();
-        panel.repaint();
-
-        // Request focus on the new Board panel
-        panel.requestFocusInWindow();
-
-        // Set the main view visible
-        theView.setVisible(true);
-
+        // Request focus and refresh display
+        SwingUtilities.invokeLater(() -> {
+            board.requestFocusInWindow();
+            theView.revalidate();
+            theView.repaint();
+        });
     }
 
     /**
@@ -179,7 +175,8 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
         menu.requestFocusInWindow();
         theView.revalidate();
         theView.repaint();
-        Board.restartGame();
+
+        board.restart();
     }
 
     @Override
@@ -202,7 +199,7 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
             switch (selectedItem) {
                 case 0 -> restart();
                 case 1 -> loadMenu();
-                case 2 -> System.out.println(menuItems[2]);
+                case 2 -> System.exit(0);
             }
         }
     }

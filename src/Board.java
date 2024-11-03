@@ -60,17 +60,19 @@ public class Board extends JPanel implements ActionListener {
     public Board(GameView theView, boolean isTwoPlayerMode) {
         this.theView = theView;
         this.isTwoPlayerMode = isTwoPlayerMode;
-        timer = new Timer(DELAY, this);
-        initializeTimer();
         initBoard();
+        initializeTimer();
     }
 
-    private void initializeTimer() {
+    public void stopTimers() {
         if (timer != null) {
             timer.stop();
+            timer = null;
         }
-        timer = new Timer(DELAY, this);
-        timer.start();
+        if (gameOverTimer != null) {
+            gameOverTimer.stop();
+            gameOverTimer = null;
+        }
     }
 
     @Override
@@ -128,8 +130,27 @@ public class Board extends JPanel implements ActionListener {
     /**
      * Restart the game and set gameOver to be false.
      */
-    public static void restartGame() {
+    public void restart() {
+        // Clear all game state
+        enemy.clear();
+        blocks.clear();
+        animations.clear();
+        powerUps.clear();
+        playerTanks.clear();
+
+        // Reset game variables
         gameOver = false;
+        pause = false;
+        numAI = 0;
+        numEnemies = goal;
+        stage = 1;
+    }
+
+
+    private void initializeTimer() {
+        stopTimers();
+        timer = new Timer(DELAY, this);
+        timer.start();
     }
 
     /**
@@ -531,7 +552,7 @@ public class Board extends JPanel implements ActionListener {
      */
     private void loadScoreBoard(GameView theView) {
         theView.getGamePanel().removeAll();
-        ScoreBoard scoreBoard = new ScoreBoard(theView, isTwoPlayerMode);
+        ScoreBoard scoreBoard = new ScoreBoard(theView, this, isTwoPlayerMode);
         scoreBoard.setBackground(Color.BLACK);
         theView.getGamePanel().add(scoreBoard);
         scoreBoard.requestFocusInWindow();

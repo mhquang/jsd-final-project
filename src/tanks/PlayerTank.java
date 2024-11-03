@@ -27,6 +27,7 @@ public class PlayerTank extends Tank {
     private boolean shield = false;
     private int starLevel = 0;
     private boolean isPlayerOne;
+    private static final SoundUtility soundUtility = SoundUtility.getInstance();
 
     public PlayerTank(int x, int y, int health, boolean isPlayerOne) {
         super(x, y, health);
@@ -80,7 +81,7 @@ public class PlayerTank extends Tank {
             Bullet bullet = createBullet();
             if (starLevel == 3) bullet.upgrade();
             this.getBullets().add(bullet);
-            SoundUtility.fireSound();
+            soundUtility.fireSound();
         }
     }
 

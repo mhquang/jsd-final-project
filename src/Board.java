@@ -19,20 +19,21 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-import static src.Menu.loadFont;
 import static src.utils.CollisionUtility.loadCollisionUtility;
 import static src.utils.CollisionUtility.resetTankPosition;
 
 public class Board extends JPanel implements ActionListener {
     // Instance variable for the timer of the tank
     private Timer timer;
+    private Timer gameOverTimer;
     private PlayerTank player1Tank, player2Tank;
     private ArrayList<PlayerTank> playerTanks = new ArrayList<>();
     private ArrayList<NPCTank> enemy = new ArrayList<>();
     private ArrayList<Block> blocks = new ArrayList<>();
     private ArrayList<Animation> animations = new ArrayList<>();
     private ArrayList<PowerUp> powerUps = new ArrayList<>();
-    private final ImageUtility imageInstance = ImageUtility.getInstance();
+    private static final ImageUtility imageInstance = ImageUtility.getInstance();
+    private static final SoundUtility soundUtility = SoundUtility.getInstance();
     private final int INIT_PLAYER_X = 13 * 16;
     private final int INIT_PLAYER_Y = Map.level0.length * 16;
     private final int B_WIDTH = Map.BOARD_WIDTH;
@@ -59,9 +60,19 @@ public class Board extends JPanel implements ActionListener {
     public Board(GameView theView, boolean isTwoPlayerMode) {
         this.theView = theView;
         this.isTwoPlayerMode = isTwoPlayerMode;
-        timer = new Timer(DELAY, this);
-        timer.start();
         initBoard();
+        initializeTimer();
+    }
+
+    public void stopTimers() {
+        if (timer != null) {
+            timer.stop();
+            timer = null;
+        }
+        if (gameOverTimer != null) {
+            gameOverTimer.stop();
+            gameOverTimer = null;
+        }
     }
 
     @Override
@@ -75,7 +86,6 @@ public class Board extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
         if (!Menu.getMenuStatus() && pause) {
             return;
         }
@@ -113,16 +123,34 @@ public class Board extends JPanel implements ActionListener {
      * Set the gameOver variable to true.
      */
     public static void setEndGame() {
-        System.out.println("Game Over Played");
-        SoundUtility.gameOver();
+        soundUtility.gameOver();
         gameOver = true;
     }
 
     /**
      * Restart the game and set gameOver to be false.
      */
-    public static void restartGame() {
+    public void restart() {
+        // Clear all game state
+        enemy.clear();
+        blocks.clear();
+        animations.clear();
+        powerUps.clear();
+        playerTanks.clear();
+
+        // Reset game variables
         gameOver = false;
+        pause = false;
+        numAI = 0;
+        numEnemies = goal;
+        stage = 1;
+    }
+
+
+    private void initializeTimer() {
+        stopTimers();
+        timer = new Timer(DELAY, this);
+        timer.start();
     }
 
     /**
@@ -154,7 +182,7 @@ public class Board extends JPanel implements ActionListener {
      */
     private void initBlocks() {
         int[][] map = Map.getMap(stage);
-        SoundUtility.startStage();
+        soundUtility.startStage();
         int type;
         for (int x = 0; x < map.length; x++) {
             for (int y = 0; y < map[0].length; y++) {
@@ -263,7 +291,7 @@ public class Board extends JPanel implements ActionListener {
      * @param g Graphics
      */
     private void drawEdge(Graphics g) {
-        Font font = loadFont();
+        Font font = BoardUtility.loadFont();
         g.setFont(font);
 
         // Draw enemies
@@ -499,7 +527,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private Timer getGameOverTimer() {
-        Timer gameOverTimer = new Timer(80, e -> {
+        gameOverTimer = new Timer(80, e -> {
             yPos += direction;
             if (yPos == stopYPos) {
                 direction = 0;
@@ -524,11 +552,11 @@ public class Board extends JPanel implements ActionListener {
      */
     private void loadScoreBoard(GameView theView) {
         theView.getGamePanel().removeAll();
-        ScoreBoard scoreBoard = new ScoreBoard(theView);
+        ScoreBoard scoreBoard = new ScoreBoard(theView, this, isTwoPlayerMode);
         scoreBoard.setBackground(Color.BLACK);
         theView.getGamePanel().add(scoreBoard);
         scoreBoard.requestFocusInWindow();
-        SoundUtility.statistics();
+        soundUtility.statistics();
         theView.setVisible(true);
     }
 
@@ -536,10 +564,10 @@ public class Board extends JPanel implements ActionListener {
      * Clear the initialized variables on the board.
      */
     private void clearBoard() {
-        animations = new ArrayList<>();
-        blocks = new ArrayList<>();
-        powerUps = new ArrayList<>();
-
+        animations.clear();
+        blocks.clear();
+        powerUps.clear();
+        enemy.clear();
         updateSprites();
         resetTankPosition(player1Tank, 2);
         if (isTwoPlayerMode) {
@@ -569,7 +597,7 @@ public class Board extends JPanel implements ActionListener {
             }
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 if (!pause) {
-                    SoundUtility.pause();
+                    soundUtility.pause();
                 }
                 pause = !pause;
             }

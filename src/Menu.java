@@ -1,5 +1,6 @@
 package src;
 
+import src.utils.BoardUtility;
 import src.utils.ImageUtility;
 
 import javax.swing.*;
@@ -8,25 +9,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Menu extends JPanel implements ActionListener, KeyListener {
-    // Load the images from ImageUtility class
+    private static Menu instance;
     private Image title, tank;
     private final GameView theView;
-    private int yPos = Map.BOARD_HEIGHT;
+    private int yPos;
     private int direction = -1;
     private final int stopYPos = 50;
     private static boolean menuStatus = true;
     private final ImageUtility imageInstance = ImageUtility.getInstance();
     private int selectedItem = 0;  // Tracks which menu item is selected
     private final String[] menuItems = {"1 PLAYER", "2 PLAYERS", "SETTING", "HELP"}; // Menu items
+    private boolean isBackFromScoreBoard;
 
-    public Menu(GameView theView) {
+    public Menu(GameView theView, int yPos) {
         this.theView = theView;
+        this.yPos = yPos;
+        this.isBackFromScoreBoard = false;
         this.setBackground(Color.BLACK);
         this.addKeyListener(this);
         this.setFocusable(true);
@@ -35,23 +35,53 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
         addTimer();
     }
 
+    public static Menu getInstance(GameView theView, int yPos) {
+        if (instance == null) {
+            instance = new Menu(theView, yPos);
+        }
+        return instance;
+    }
+
+    /**
+     * Return if the game is showing the menu
+     *
+     * @return a boolean
+     */
+    public static boolean getMenuStatus() {
+        return menuStatus;
+    }
+
+    public void setBackFromScoreBoard(boolean isBackFromScoreBoard) {
+        this.isBackFromScoreBoard = isBackFromScoreBoard;
+        if (isBackFromScoreBoard) {
+            this.isBackFromScoreBoard = false;
+            menuStatus = true;
+            this.requestFocusInWindow();
+            this.revalidate();
+            this.repaint();
+        }
+    }
+
     private void addTimer() {
-        Timer timer = new Timer(10, e -> {
-            yPos += direction;
-            if (yPos == stopYPos) {
-                direction = 0;
-            } else if (yPos + title.getHeight(null) > getHeight()) {
-                yPos = getHeight() - title.getHeight(
-                        null);
-            } else if (yPos < 0) {
-                yPos = 0;
-                direction *= -1;
-            }
-            repaint();
-        });
-        timer.setRepeats(true);
-        timer.setCoalesce(true);
-        timer.start();
+        if (!isBackFromScoreBoard && yPos != stopYPos) {
+            Timer timer = new Timer(10, e -> {
+                yPos += direction;
+                if (yPos == stopYPos) {
+                    direction = 0;
+                } else if (yPos + title.getHeight(null) > getHeight()) {
+                    yPos = getHeight() - title.getHeight(
+                            null);
+                } else if (yPos < 0) {
+                    yPos = 0;
+                    direction *= -1;
+                }
+                repaint();
+            });
+            timer.setRepeats(true);
+            timer.setCoalesce(true);
+            timer.start();
+        }
+
     }
 
     private void loadMenuImages() {
@@ -63,7 +93,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        Font font = loadFont();
+        Font font = BoardUtility.loadFont();
         g.setFont(font);
         g.setColor(Color.WHITE);
 
@@ -99,27 +129,6 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e) {
     }
 
-    /**
-     * Load the game font to the program
-     *
-     * @return font of the game
-     */
-    public static Font loadFont() {
-        Font font = null;
-        try {
-            font = Font.createFont(Font.TRUETYPE_FONT,
-                    new File("prstart.ttf"));
-            font = font.deriveFont(java.awt.Font.PLAIN, 15);
-            GraphicsEnvironment ge
-                    = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(font);
-
-        } catch (FontFormatException | IOException ex) {
-            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return font;
-    }
-
     @Override
     public void keyTyped(KeyEvent e) {
     }
@@ -127,13 +136,13 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         // Handle menu navigation
-        if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyChar() == 's') {
+        if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
             selectedItem++;
             if (selectedItem >= menuItems.length) {
                 selectedItem = 0; // Loop back to the top
             }
             repaint(); // Refresh the menu to show the tank's new position
-        } else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyChar() == 'w') {
+        } else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
             selectedItem--;
             if (selectedItem < 0) {
                 selectedItem = menuItems.length - 1; // Loop back to the bottom
@@ -146,7 +155,6 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
                 } else if (selectedItem == 1) {
                     // 2 players mode
                     loadBoard(true);
-                    System.out.println(menuItems[1]);
                 } else if (selectedItem == 2) {
                     System.out.println(menuItems[2]);
                 } else if (selectedItem == 3) {
@@ -157,10 +165,14 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
         }
     }
 
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+
     /**
      * Load the board to the game panel on the JFrame of the game.
      */
-    public void loadBoard(boolean isTwoPlayerMode) {
+    private void loadBoard(boolean isTwoPlayerMode) {
         // Change the menu status
         menuStatus = false;
 
@@ -180,19 +192,5 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 
         // Set the main view visible
         theView.setVisible(true);
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-    }
-
-    /**
-     * Return if the game is showing the menu
-     *
-     * @return a boolean
-     */
-    public static boolean getMenuStatus() {
-        return menuStatus;
     }
 }

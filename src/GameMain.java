@@ -18,13 +18,11 @@ public class GameMain {
         }
 
         /* Create and display the form */
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                GameView theView = new GameView();
-                Menu menu = new Menu(theView);
-                theView.getGamePanel().add(menu);
-                theView.setVisible(true);
-            }
+        EventQueue.invokeLater(() -> {
+            GameView theView = new GameView();
+//            Menu menu = new Menu(theView, Map.BOARD_HEIGHT);
+//            theView.getGamePanel().add(menu);
+            theView.setVisible(true);
         });
     }
 

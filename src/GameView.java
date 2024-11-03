@@ -10,6 +10,7 @@ public class GameView extends JFrame {
     public GameView() {
         initComponents();
         setLocationRelativeTo(null);
+        addMenu();
     }
 
     public JPanel getGamePanel() {
@@ -40,5 +41,11 @@ public class GameView extends JFrame {
         );
 
         pack();
+    }
+
+    private void addMenu() {
+        Menu menu = Menu.getInstance(this, Map.BOARD_HEIGHT);
+        gamePanel.add(menu);
+        menu.setVisible(true);
     }
 }

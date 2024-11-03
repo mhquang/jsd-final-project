@@ -26,6 +26,7 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
     private int[] tankNumList = {0, 0, 0, 0};
     private int selectedItem = 0;  // Tracks which menu item is selected
     private final String[] menuItems = {"RESTART", "MAIN MENU", "EXIT"};
+    private boolean previousMode;
 
     /**
      * Constructor for the ScoreBoard. A restart button is added for the player
@@ -33,8 +34,9 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
      *
      * @param theView GameView that represents the frame of the game
      */
-    public ScoreBoard(GameView theView) {
+    public ScoreBoard(GameView theView, boolean previousMode) {
         this.theView = theView;
+        this.previousMode = previousMode;
         this.setFocusable(true);
         theView.setForeground(Color.BLACK);
         this.setLayout(null);
@@ -143,7 +145,26 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
      */
     public void restart() {
         Board.restartGame();
+        // Remove all components to clear the previous Board
+        theView.getGamePanel().removeAll();
+
+        // Reset scores
         CollisionUtility.resetScore();
+
+        // Create and add a new Board panel
+        Board panel = new Board(theView, previousMode);
+        theView.getGamePanel().add(panel);
+
+        // Refresh and repaint the panel
+        panel.revalidate();
+        panel.repaint();
+
+        // Request focus on the new Board panel
+        panel.requestFocusInWindow();
+
+        // Set the main view visible
+        theView.setVisible(true);
+
     }
 
     /**
@@ -158,6 +179,7 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
         menu.requestFocusInWindow();
         theView.revalidate();
         theView.repaint();
+        Board.restartGame();
     }
 
     @Override

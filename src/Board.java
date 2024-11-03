@@ -25,6 +25,7 @@ import static src.utils.CollisionUtility.resetTankPosition;
 public class Board extends JPanel implements ActionListener {
     // Instance variable for the timer of the tank
     private Timer timer;
+    private Timer gameOverTimer;
     private PlayerTank player1Tank, player2Tank;
     private ArrayList<PlayerTank> playerTanks = new ArrayList<>();
     private ArrayList<NPCTank> enemy = new ArrayList<>();
@@ -60,8 +61,16 @@ public class Board extends JPanel implements ActionListener {
         this.theView = theView;
         this.isTwoPlayerMode = isTwoPlayerMode;
         timer = new Timer(DELAY, this);
-        timer.start();
+        initializeTimer();
         initBoard();
+    }
+
+    private void initializeTimer() {
+        if (timer != null) {
+            timer.stop();
+        }
+        timer = new Timer(DELAY, this);
+        timer.start();
     }
 
     @Override
@@ -112,7 +121,6 @@ public class Board extends JPanel implements ActionListener {
      * Set the gameOver variable to true.
      */
     public static void setEndGame() {
-        System.out.println("Game Over Played");
         soundUtility.gameOver();
         gameOver = true;
     }
@@ -498,7 +506,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private Timer getGameOverTimer() {
-        Timer gameOverTimer = new Timer(80, e -> {
+        gameOverTimer = new Timer(80, e -> {
             yPos += direction;
             if (yPos == stopYPos) {
                 direction = 0;
@@ -523,7 +531,7 @@ public class Board extends JPanel implements ActionListener {
      */
     private void loadScoreBoard(GameView theView) {
         theView.getGamePanel().removeAll();
-        ScoreBoard scoreBoard = new ScoreBoard(theView);
+        ScoreBoard scoreBoard = new ScoreBoard(theView, isTwoPlayerMode);
         scoreBoard.setBackground(Color.BLACK);
         theView.getGamePanel().add(scoreBoard);
         scoreBoard.requestFocusInWindow();
@@ -535,10 +543,10 @@ public class Board extends JPanel implements ActionListener {
      * Clear the initialized variables on the board.
      */
     private void clearBoard() {
-        animations = new ArrayList<>();
-        blocks = new ArrayList<>();
-        powerUps = new ArrayList<>();
-
+        animations.clear();
+        blocks.clear();
+        powerUps.clear();
+        enemy.clear();
         updateSprites();
         resetTankPosition(player1Tank, 2);
         if (isTwoPlayerMode) {

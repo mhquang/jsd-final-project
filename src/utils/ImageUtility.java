@@ -33,7 +33,7 @@ public class ImageUtility {
         gameOver = loadImage("image/game_over.png");
     }
 
-    public Image loadImage(String imageAddress) {
+    private Image loadImage(String imageAddress) {
         ImageIcon icon = new ImageIcon(imageAddress);
         return icon.getImage();
     }

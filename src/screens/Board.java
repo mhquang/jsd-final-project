@@ -1,15 +1,15 @@
-package src;
+package src.screens;
 
+import src.BlockType;
+import src.GameView;
+import src.Map;
 import src.animation.Animation;
 import src.animation.Bullet;
 import src.environments.*;
 import src.powerups.PowerUp;
 import src.tanks.NPCTank;
 import src.tanks.PlayerTank;
-import src.utils.BoardUtility;
-import src.utils.CollisionUtility;
-import src.utils.ImageUtility;
-import src.utils.SoundUtility;
+import src.utils.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,6 +34,7 @@ public class Board extends JPanel implements ActionListener {
     private ArrayList<PowerUp> powerUps = new ArrayList<>();
     private static final ImageUtility imageInstance = ImageUtility.getInstance();
     private static final SoundUtility soundUtility = SoundUtility.getInstance();
+    private static final FontUtility fontUtility = FontUtility.getInstance();
     private final int INIT_PLAYER_X = 13 * 16;
     private final int INIT_PLAYER_Y = Map.level0.length * 16;
     private final int B_WIDTH = Map.BOARD_WIDTH;
@@ -291,7 +292,7 @@ public class Board extends JPanel implements ActionListener {
      * @param g Graphics
      */
     private void drawEdge(Graphics g) {
-        Font font = BoardUtility.loadFont();
+        Font font = fontUtility.getPrstart();
         g.setFont(font);
 
         // Draw enemies

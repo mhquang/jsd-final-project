@@ -1,7 +1,9 @@
-package src;
+package src.screens;
 
+import src.GameView;
 import src.utils.BoardUtility;
 import src.utils.CollisionUtility;
+import src.utils.FontUtility;
 import src.utils.ImageUtility;
 
 import javax.swing.*;
@@ -22,6 +24,7 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
     private int stage, totalTankNum;
     private int totalScore = 0;
     private final ImageUtility imageInstance = ImageUtility.getInstance();
+    private static final FontUtility fontUtility = FontUtility.getInstance();
     private int[] tankScoreList = {0, 0, 0, 0};
     private int[] tankNumList = {0, 0, 0, 0};
     private int selectedItem = 0;  // Tracks which menu item is selected
@@ -55,7 +58,7 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
         super.paintComponent(g);
         loadScore();
 
-        Font font = BoardUtility.loadFont();
+        Font font = fontUtility.getPrstart();
         g.setFont(font);
         g.setColor(Color.WHITE);
 

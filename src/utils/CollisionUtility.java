@@ -1,7 +1,7 @@
 package src.utils;
 
 import src.BlockType;
-import src.Board;
+import src.screens.Board;
 import src.animation.*;
 import src.environments.Base;
 import src.environments.Block;

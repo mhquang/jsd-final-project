@@ -1,8 +1,8 @@
 package src.utils;
 
 import src.BlockType;
-import src.Board;
-import src.Menu;
+import src.screens.Board;
+import src.screens.Menu;
 import src.animation.*;
 import src.environments.Block;
 import src.powerups.*;
@@ -105,6 +105,7 @@ public class BoardUtility {
         Random random = new Random();
         int randomPow = random.nextInt(5);
         if (CollisionUtility.powerUpX != 0 || CollisionUtility.powerUpY != 0) {
+            soundUtility.powerupAppear();
             switch (randomPow) {
                 case 0:
                     powerUps.add(new BombPowerUp(CollisionUtility.powerUpX,
@@ -262,26 +263,5 @@ public class BoardUtility {
             CollisionUtility.checkCollisionBulletsTankAI(bullets, enemy);
             CollisionUtility.checkCollisionTankTankAI(enemy, playerTank);
         }
-    }
-
-    /**
-     * Load the game font to the program
-     *
-     * @return font of the game
-     */
-    public static Font loadFont() {
-        Font font = null;
-        try {
-            font = Font.createFont(Font.TRUETYPE_FONT,
-                    new File("prstart.ttf"));
-            font = font.deriveFont(java.awt.Font.PLAIN, 15);
-            GraphicsEnvironment ge
-                    = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(font);
-
-        } catch (FontFormatException | IOException ex) {
-            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return font;
     }
 }

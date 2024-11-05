@@ -2,18 +2,6 @@ package src.animation;
 
 import src.tanks.PlayerTank;
 
-/**
- * TankShield is an animation which is created when the tank becomes
- * invulnerable either when the Tank respawns or gets a star power up
- *
- * @param Tank atank takes the player tank and uses its x and y coordinates to
- * draw the position of the shield. Also turns the players shield field off when
- * the TankShield animations is finished
- * @param int type determines how long the shield will last, type 1 is used for
- * when a powerup is used (last tens seconds) type 2 is used for a respawning
- * tank (lasts three seconds)
- * @author Adrian Berg
- */
 public class TankShield extends Animation {
     long initialTime = System.currentTimeMillis();
     private PlayerTank playerTank;

@@ -14,30 +14,23 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class BoardUtility {
 
-    private static ArrayList<NPCTank> enemy = new ArrayList<>();
-    private static ArrayList<Block> blocks = new ArrayList<>();
-    private static ArrayList<Animation> animations = new ArrayList<>();
-    private static ArrayList<PowerUp> powerUps = new ArrayList<>();
-    private static ArrayList<PlayerTank> playerTanks = new ArrayList<>();
+    private static CopyOnWriteArrayList<NPCTank> enemy = new CopyOnWriteArrayList<>();
+    private static CopyOnWriteArrayList<Block> blocks = new CopyOnWriteArrayList<>();
+    private static CopyOnWriteArrayList<Animation> animations = new CopyOnWriteArrayList<>();
+    private static CopyOnWriteArrayList<PowerUp> powerUps = new CopyOnWriteArrayList<>();
+    private static CopyOnWriteArrayList<PlayerTank> playerTanks = new CopyOnWriteArrayList<>();
     private static final SoundUtility soundUtility = SoundUtility.getInstance();
-    /**
-     * Constructor for the BoardUtility class
-     *
-     * @param enemy1      an array list that stores enemy tanks
-     * @param blocks1     an array list that stores blocks on the board
-     * @param animations1 an array list that stores different animations
-     * @param powerUps1   an array list that stores different power-ups
-     * @param playerTank1 the Tank class that represents the player
-     */
-    public static void loadBoardUtility(ArrayList<NPCTank> enemy1,
-                                        ArrayList<Block> blocks1,
-                                        ArrayList<Animation> animations1,
-                                        ArrayList<PowerUp> powerUps1, ArrayList<PlayerTank> playerTank1) {
+
+    public static void loadBoardUtility(CopyOnWriteArrayList<NPCTank> enemy1,
+                                        CopyOnWriteArrayList<Block> blocks1,
+                                        CopyOnWriteArrayList<Animation> animations1,
+                                        CopyOnWriteArrayList<PowerUp> powerUps1, CopyOnWriteArrayList<PlayerTank> playerTank1) {
         enemy = enemy1;
         blocks = blocks1;
         animations = animations1;
@@ -45,9 +38,6 @@ public class BoardUtility {
         playerTanks = playerTank1;
     }
 
-    /**
-     * Update power ups on the board.
-     */
     public static void updatePowerUps() {
         for (int i = 0; i < powerUps.size(); i++) {
             PowerUp p = powerUps.get(i);
@@ -97,10 +87,6 @@ public class BoardUtility {
 
     }
 
-    /**
-     * Spawn random PowerUp when the given tank AI carries powerUp and is
-     * destroyed.
-     */
     public static void spawnPowerUp() {
         Random random = new Random();
         int randomPow = random.nextInt(5);
@@ -135,12 +121,6 @@ public class BoardUtility {
         }
     }
 
-    /**
-     * Spawn Tank AI on the board.
-     *
-     * @param difficulty a string that represents the difficulty of the tank AI
-     * @param powerUp    a boolean that represents if the tank AI carries powerUp
-     */
     public static void spawnTankAI(String difficulty, boolean powerUp) {
         Random random = new Random();
         int randomPos = random.nextInt(3);
@@ -170,12 +150,9 @@ public class BoardUtility {
         }
     }
 
-    /**
-     * Update bullets and tank AI on the board.
-     */
     public static void updateBulletsTankAI() {
         for (NPCTank NPCTank : enemy) {
-            ArrayList<Bullet> bullets = NPCTank.getBullets();
+            CopyOnWriteArrayList<Bullet> bullets = NPCTank.getBullets();
             for (int i = 0; i < bullets.size(); i++) {
                 Bullet b = bullets.get(i);
                 if (b.isVisible()) {
@@ -187,12 +164,9 @@ public class BoardUtility {
         }
     }
 
-    /**
-     * Update bullets and tank on the Board.
-     */
     public static void updateBulletsTank() {
         for (PlayerTank playerTank : playerTanks) {
-            ArrayList<Bullet> bullets = playerTank.getBullets();
+            CopyOnWriteArrayList<Bullet> bullets = playerTank.getBullets();
 
             for (int i = 0; i < bullets.size(); i++) {
                 Bullet b = bullets.get(i);
@@ -206,9 +180,6 @@ public class BoardUtility {
 
     }
 
-    /**
-     * Update blocks on the Board.
-     */
     public static void updateBlocks() {
         for (int i = 0; i < blocks.size(); i++) {
             Block b = blocks.get(i);
@@ -224,9 +195,6 @@ public class BoardUtility {
         }
     }
 
-    /**
-     * Update animations on the Board.
-     */
     public static void updateAnimations() {
         for (int i = 0; i < animations.size(); i++) {
             if (!animations.get(i).isVisible()) {
@@ -237,9 +205,6 @@ public class BoardUtility {
         }
     }
 
-    /**
-     * Update tank on the Board.
-     */
     public static void updateTank() {
         for (PlayerTank playerTank : playerTanks) {
             if (playerTank.isVisible()) {
@@ -249,12 +214,9 @@ public class BoardUtility {
 
     }
 
-    /**
-     * Check for collisions on the board.
-     */
     public static void checkCollisions() {
         for (PlayerTank playerTank : playerTanks) {
-            ArrayList<Bullet> bullets = new ArrayList<>(playerTank.getBullets());
+            CopyOnWriteArrayList<Bullet> bullets = new CopyOnWriteArrayList<>(playerTank.getBullets());
             for (NPCTank NPCTank : enemy) {
                 bullets.addAll(NPCTank.getBullets());
             }

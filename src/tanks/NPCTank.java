@@ -7,14 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
 
-/**
- * TankAI extends Sprite. TankAI represents the enemy in the game. TankAI has an
- * array of bullets and is capable of moving and firing bullets depending on
- * difficulties. TankAI has 4 different types that is upgraded in several ways.
- * TankAI can also give player power up.
- */
 public class NPCTank extends Tank {
-
     private boolean powerUp;
     private String difficulty;
     private String type;

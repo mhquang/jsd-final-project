@@ -38,16 +38,14 @@ public class Setting extends JPanel implements ActionListener, KeyListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Title font
         Font titleFont = fontUtility.getPrstart().deriveFont(Font.BOLD, 28f);
         g.setFont(titleFont);
         g.setColor(Color.WHITE);
 
-        // Draw title
         String title = "SETTINGS";
         g.drawString(title, gameView.getWidth() / 2 - g.getFontMetrics().stringWidth(title) / 2, 50);
 
-        Font instructionFont = fontUtility.getArialbd().deriveFont(26f); // Smaller font size for instructions
+        Font instructionFont = fontUtility.getArialbd().deriveFont(26f);
         g.setFont(instructionFont);
 
         String sound = "Sound";
@@ -63,7 +61,6 @@ public class Setting extends JPanel implements ActionListener, KeyListener {
 
         String backMsg = "PRESS ESC TO RETURN TO MENU";
 
-        // Draw back message centered at the bottom
         g.drawString(backMsg, gameView.getWidth() / 2 - g.getFontMetrics().stringWidth(backMsg) / 2,
                 Map.BOARD_HEIGHT * 4 / 5 + 90);
     }

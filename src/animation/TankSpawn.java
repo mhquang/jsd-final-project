@@ -1,12 +1,5 @@
 package src.animation;
 
-/**
- * TankSpawn is an animation used when enemy tanks are spawned
- *
- * @param int x represents the starting x location in pixels
- * @param int y represents the starting y location in pixels
- * @author Adrian Berg
- */
 public class TankSpawn extends Animation {
 
     public TankSpawn(int x, int y) {

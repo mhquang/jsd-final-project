@@ -46,21 +46,17 @@ public class GameView extends JFrame {
     }
 
     public void showMenu() {
-        // Clear previous components
         getGamePanel().removeAll();
 
-        // Get the Menu singleton instance and add it to the GameView
-        Menu menu = Menu.getInstance(this, 50); // Adjust yPos if needed
+        Menu menu = Menu.getInstance(this, 50);
         getGamePanel().add(menu);
         menu.setMenuStatus(true);
-        // Refresh and repaint the panel
+
         menu.revalidate();
         menu.repaint();
 
-        // Request focus on the Menu panel
         menu.requestFocusInWindow();
 
-        // Set the main view visible
         setVisible(true);
     }
 

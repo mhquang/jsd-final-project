@@ -7,6 +7,7 @@ import src.utils.CollisionUtility;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class Tank extends Sprite {
 
@@ -15,13 +16,13 @@ public abstract class Tank extends Sprite {
     private int dx;
     private int dy;
     private int direction;
-    private ArrayList<Bullet> bullets;
+    private CopyOnWriteArrayList<Bullet> bullets;
     private int health;
 
     public Tank(int x, int y, int health) {
         super(x, y);
         this.health = health;
-        bullets = new ArrayList<>();
+        bullets = new CopyOnWriteArrayList<>();
         direction = 0;
     }
 
@@ -57,7 +58,7 @@ public abstract class Tank extends Sprite {
         this.direction = direction;
     }
 
-    public ArrayList<Bullet> getBullets() {
+    public CopyOnWriteArrayList<Bullet> getBullets() {
         return bullets;
     }
 

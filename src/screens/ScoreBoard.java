@@ -1,7 +1,6 @@
 package src.screens;
 
 import src.GameView;
-import src.utils.BoardUtility;
 import src.utils.CollisionUtility;
 import src.utils.FontUtility;
 import src.utils.ImageUtility;
@@ -16,10 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
-
-    /**
-     * Initialize instance variables for the ScoreBoard
-     */
     private GameView theView;
     private int stage, totalTankNum;
     private int totalScore = 0;
@@ -27,32 +22,19 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
     private static final FontUtility fontUtility = FontUtility.getInstance();
     private int[] tankScoreList = {0, 0, 0, 0};
     private int[] tankNumList = {0, 0, 0, 0};
-    private int selectedItem = 0;  // Tracks which menu item is selected
+    private int selectedItem = 0;
     private final String[] menuItems = {"RESTART", "MAIN MENU", "EXIT"};
-    private boolean previousMode;
     private Board board;
 
-    /**
-     * Constructor for the ScoreBoard. A restart button is added for the player
-     * to restart the game
-     *
-     * @param theView GameView that represents the frame of the game
-     */
-    public ScoreBoard(GameView theView, Board board, boolean previousMode) {
+    public ScoreBoard(GameView theView, Board board) {
         this.theView = theView;
         this.board = board;
-        this.previousMode = previousMode;
         this.setFocusable(true);
         theView.setForeground(Color.BLACK);
         this.setLayout(null);
         this.addKeyListener(this);
     }
 
-    /**
-     * Draw the scoreBoard with different types of enemies on the screen.
-     *
-     * @param g Graphics
-     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -62,7 +44,6 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
         g.setFont(font);
         g.setColor(Color.WHITE);
 
-        // Draw scoreboard items, e.g., total score, tank types, etc. (unchanged)
         stage = Board.getStage();
         ArrayList<Image> tankList = new ArrayList<>(Arrays.asList(
                 imageInstance.getTankBasic(),
@@ -98,32 +79,26 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
         g.drawString(String.valueOf(totalScore), xCenterShift + 20, totalY + 30);
 
 
-        // Draw horizontal menu
-        int menuY = totalY + 150; // Y position below the scoreboard
-        int spacing = 50; // Horizontal spacing between menu items
+        int menuY = totalY + 150;
+        int spacing = 50;
 
-        // Calculate total width of the menu
         int menuWidth = 0;
         for (String item : menuItems) {
             menuWidth += g.getFontMetrics().stringWidth(item) + spacing;
         }
-        menuWidth -= spacing; // Remove last extra spacing
+        menuWidth -= spacing;
 
-        int xPosition = xCenterShift - menuWidth / 2; // Start position for first item
+        int xPosition = xCenterShift - menuWidth / 2;
         for (int i = 0; i < menuItems.length; i++) {
-            g.setColor(i == selectedItem ? Color.RED : Color.WHITE); // Highlight selected item
+            g.setColor(i == selectedItem ? Color.RED : Color.WHITE);
             g.drawString(menuItems[i], xPosition, menuY);
-            xPosition += g.getFontMetrics().stringWidth(menuItems[i]) + spacing; // Move x position to the right
+            xPosition += g.getFontMetrics().stringWidth(menuItems[i]) + spacing;
         }
     }
 
-
-    /**
-     * Load the totalScore of the player from the CollisionUtility class.
-     */
     public void loadScore() {
-        totalScore = 0; // Reset total score before recalculating
-        totalTankNum = 0; // Reset total tank count before recalculating
+        totalScore = 0;
+        totalTankNum = 0;
 
         for (int i = 0; i < 4; i++) {
             int[] enemyTankNum = CollisionUtility.getEnemyTankNum();
@@ -140,25 +115,14 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
         }
     }
 
-    /**
-     * Restart the game, load the menu and reset player's totalScore.
-     */
     public void restart() {
         board.restart();
 
-        if (board != null) {
-            board.stopTimers();
-        }
         theView.getGamePanel().removeAll();
 
-        // Reset scores and create new board
         CollisionUtility.resetScore();
-        board = new Board(theView, previousMode);
-
-        // Add new board to the game panel
         theView.getGamePanel().add(board);
 
-        // Request focus and refresh display
         SwingUtilities.invokeLater(() -> {
             board.requestFocusInWindow();
             theView.revalidate();
@@ -166,10 +130,6 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
         });
     }
 
-    /**
-     * Load the menu to the game panel if the player chooses to restart the
-     * game.
-     */
     private void loadMenu() {
         theView.getGamePanel().removeAll();
         Menu menu = Menu.getInstance(theView, 50);
@@ -179,7 +139,7 @@ public class ScoreBoard extends JPanel implements ActionListener, KeyListener {
         theView.revalidate();
         theView.repaint();
 
-        board.restart();
+        board.reset();
     }
 
     @Override

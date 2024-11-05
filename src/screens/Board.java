@@ -18,34 +18,28 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static src.utils.CollisionUtility.loadCollisionUtility;
 import static src.utils.CollisionUtility.resetTankPosition;
 
-public class Board extends JPanel implements ActionListener {
-    // Instance variable for the timer of the tank
-    private Timer timer;
-    private Timer gameOverTimer;
+public class Board extends JPanel implements ActionListener, Runnable {
+    private Thread gameThread;
+    private boolean running = true;
     private PlayerTank player1Tank, player2Tank;
-    private ArrayList<PlayerTank> playerTanks = new ArrayList<>();
-    private ArrayList<NPCTank> enemy = new ArrayList<>();
-    private ArrayList<Block> blocks = new ArrayList<>();
-    private ArrayList<Animation> animations = new ArrayList<>();
-    private ArrayList<PowerUp> powerUps = new ArrayList<>();
+    private CopyOnWriteArrayList<PlayerTank> playerTanks = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<NPCTank> enemy = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<Block> blocks = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<Animation> animations = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<PowerUp> powerUps = new CopyOnWriteArrayList<>();
     private static final ImageUtility imageInstance = ImageUtility.getInstance();
     private static final SoundUtility soundUtility = SoundUtility.getInstance();
     private static final FontUtility fontUtility = FontUtility.getInstance();
     private final int INIT_PLAYER_X = 13 * 16;
     private final int INIT_PLAYER_Y = Map.level0.length * 16;
-    private final int B_WIDTH = Map.BOARD_WIDTH;
-    private final int B_HEIGHT = Map.BOARD_HEIGHT;
-    private final int DELAY = 15;
     private final int initX = 31;
     private boolean pause = false;
     private static boolean gameOver = false;
-    private int yPos = Map.BOARD_HEIGHT;
-    private int direction = -1;
-    private final int stopYPos = Map.BOARD_HEIGHT / 2 - 75;
     private GameView theView;
     private static int stage = 1;
     private int numAI;
@@ -53,26 +47,49 @@ public class Board extends JPanel implements ActionListener {
     public static int numEnemies = goal;
     private boolean isTwoPlayerMode;
 
-    /**
-     * Constructor for the Board class
-     *
-     * @param theView GameView that represents the frame of the game
-     */
     public Board(GameView theView, boolean isTwoPlayerMode) {
         this.theView = theView;
         this.isTwoPlayerMode = isTwoPlayerMode;
         initBoard();
-        initializeTimer();
+        startGame();
     }
 
-    public void stopTimers() {
-        if (timer != null) {
-            timer.stop();
-            timer = null;
+    private void startGame() {
+        gameThread = new Thread(this);
+        gameThread.start();
+    }
+
+    @Override
+    public void run() {
+        while (running) {
+            if (!pause) {
+                if (gameOver) {
+                    stopGame();
+                    return;
+                }
+                updateSprites();
+                checkCollisions();
+                checkGameOver();
+
+                nextLevel();
+                repaint();
+            }
+
+            try {
+                Thread.sleep(16); // Approx. 60 FPS (1000 ms / 60 ≈ 16 ms)
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
         }
-        if (gameOverTimer != null) {
-            gameOverTimer.stop();
-            gameOverTimer = null;
+    }
+
+    public void stopGame() {
+        running = false;
+        try {
+            gameThread.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -88,59 +105,40 @@ public class Board extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (!Menu.getMenuStatus() && pause) {
-            return;
-        }
-        if (gameOver) {
-            timer.stop();
-            return;
-        }
-        updateSprites();
-        checkCollisions();
-        checkGameOver();
-
-        nextLevel();
-        repaint();
     }
 
-    /**
-     * Decrease the number of enemies shown on the sidebar of the board
-     *
-     * @param num the number of enemies that needs to be decreased
-     */
     public static void decrementEnemies(int num) {
         numEnemies -= num;
     }
 
-    /**
-     * Get the number of current stage
-     *
-     * @return stage an integer that represents the number of current stage
-     */
     public static int getStage() {
         return stage;
     }
 
-    /**
-     * Set the gameOver variable to true.
-     */
     public static void setEndGame() {
         soundUtility.gameOver();
         gameOver = true;
     }
 
-    /**
-     * Restart the game and set gameOver to be false.
-     */
     public void restart() {
-        // Clear all game state
+        reset();
+
+        running = true;
+        initBoard();
+        repaint();
+
+        startGame();
+    }
+
+    public void reset() {
         enemy.clear();
         blocks.clear();
         animations.clear();
         powerUps.clear();
         playerTanks.clear();
 
-        // Reset game variables
+        CollisionUtility.resetScore();
+
         gameOver = false;
         pause = false;
         numAI = 0;
@@ -148,24 +146,12 @@ public class Board extends JPanel implements ActionListener {
         stage = 1;
     }
 
-
-    private void initializeTimer() {
-        stopTimers();
-        if (timer == null) {
-            timer = new Timer(DELAY, this);
-        }
-        timer.start();
-    }
-
-    /**
-     * Initialize the board.
-     */
     private void initBoard() {
         stage = 1;
         addKeyListener(new TAdapter());
         setFocusable(true);
         setBackground(Color.BLACK);
-        setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
+        setPreferredSize(new Dimension(Map.BOARD_WIDTH, Map.BOARD_HEIGHT));
 
         numAI = 0;
         player1Tank = new PlayerTank(INIT_PLAYER_X, INIT_PLAYER_Y, 5, true);
@@ -181,9 +167,6 @@ public class Board extends JPanel implements ActionListener {
         BoardUtility.loadBoardUtility(enemy, blocks, animations, powerUps, playerTanks);
     }
 
-    /**
-     * Initialize blocks according to the map.
-     */
     private void initBlocks() {
         int[][] map = Map.getMap(stage);
         soundUtility.startStage();
@@ -218,10 +201,6 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    /**
-     * Check if the player's health is lower than 0. If lower than 0, then end
-     * the game
-     */
     private void checkGameOver() {
         if (player1Tank.getHealth() == 0) {
             setEndGame();
@@ -233,16 +212,15 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    /**
-     * Draw objects on the board.
-     */
     private void drawObjects(Graphics g) {
         for (NPCTank NPCTank : enemy) {
             if (NPCTank.isVisible()) {
-                g.drawImage(NPCTank.getImage(), NPCTank.getX(), NPCTank.getY(),
-                        this);
+                g.drawImage(NPCTank.getImage(), NPCTank.getX(), NPCTank.getY(), this);
+            } else {
+                enemy.remove(NPCTank); // Safely remove invisible NPCTank
             }
         }
+
         if (player1Tank.isVisible()) {
             g.drawImage(player1Tank.getImage(), player1Tank.getX(), player1Tank.getY(), this);
         }
@@ -275,6 +253,8 @@ public class Board extends JPanel implements ActionListener {
         for (Block a : blocks) {
             if (a.isVisible()) {
                 g.drawImage(a.getImage(), a.getX(), a.getY(), this);
+            } else {
+                blocks.remove(a);
             }
         }
         for (Animation e : animations) {
@@ -289,11 +269,6 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    /**
-     * Draw the edge of the game
-     *
-     * @param g Graphics
-     */
     private void drawEdge(Graphics g) {
         Font font = fontUtility.getPrstart();
         g.setFont(font);
@@ -325,13 +300,6 @@ public class Board extends JPanel implements ActionListener {
         g.drawString(String.valueOf(stage), (initX + 1) * 16, 25 * 16);
     }
 
-    /**
-     * Draw the part that shows how many enemies left in the game on the edge of
-     * the game board
-     *
-     * @param g          Graphics
-     * @param numEnemies number of enemies left in the game
-     */
     private void drawEnemies(Graphics g, int numEnemies) {
         Image enemyIcon = imageInstance.getEnemyIcon();
         int count = 1;
@@ -362,9 +330,6 @@ public class Board extends JPanel implements ActionListener {
         g.drawString(pauseText, getWidth() / 2 - g.getFontMetrics().stringWidth(pauseText) / 2, getHeight() / 2);
     }
 
-    /**
-     * Call initBoard to enter next Level when no enemy in the list.
-     */
     private void nextLevel() {
         if (enemy.isEmpty()) {
             if (stage == 35) {
@@ -383,9 +348,6 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    /**
-     * UpdatesSprites is used to call the various update calls.
-     */
     private void updateSprites() {
         spawnTankAI();
         spawnPowerUp();
@@ -394,42 +356,21 @@ public class Board extends JPanel implements ActionListener {
         updateBullets();
         updateBlocks();
         updateAnimations();
-        updateBlocks();
         updatePowerUps();
     }
 
-    /**
-     * Update animations on the board this includes
-     * TankShield/Explosion/ExplodingTank/TankSpawn
-     * <p>
-     * Animations are removed if vis is false. Otherwise, animations are updated
-     * via the updateAnimation method
-     */
     private void updateAnimations() {
         BoardUtility.updateAnimations();
     }
 
-    /**
-     * Update blocks on the board this includes Base/Brick/Edge/River/Steel/Tree
-     * <p>
-     * Blocks are removed if vis is false. Blocks that are types RIVER and BASE
-     * they will be updated via the updateAnimation method
-     */
     private void updateBlocks() {
         BoardUtility.updateBlocks();
     }
 
-    /**
-     * Updates the player tank.
-     * If the tank is visible it is moved
-     */
     private void updateTank() {
         BoardUtility.updateTank();
     }
 
-    /**
-     * Updates the tank AI.
-     */
     private void updateTankAI() {
         for (NPCTank NPCTank : enemy) {
             if (NPCTank.isVisible()) {
@@ -460,9 +401,6 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    /**
-     * Spawn tank AI to reach the goal.
-     */
     private void spawnTankAI() {
         while (numAI < goal) {
             if (enemy.size() < 4) {
@@ -482,13 +420,6 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    /**
-     * Updates the powerUps on the board
-     * <p>
-     * Unlike the other updateMethods, update for powerUps handles the collision
-     * of a player tank and a powerUp.
-     * PowerUps are removed if vis = false otherwise they are updated via updateAnimations.
-     */
     private void updatePowerUps() {
         BoardUtility.updatePowerUps();
     }
@@ -497,75 +428,37 @@ public class Board extends JPanel implements ActionListener {
         BoardUtility.spawnPowerUp();
     }
 
-    /**
-     * updates the bullets for both the player tank and enemyIcon Tanks
-     */
     private void updateBullets() {
         BoardUtility.updateBulletsTank();
         BoardUtility.updateBulletsTankAI();
     }
 
-    /**
-     * Check collisions between different sprite classes
-     */
     private void checkCollisions() {
         BoardUtility.checkCollisions();
     }
 
-    /**
-     * Create end game information on the screen. After the "GAME OVER" image
-     * shows on the screen, a score board of the entire game will be displayed
-     *
-     * @param g Graphics
-     */
     private void endGame(Graphics g) {
         if (gameOver) {
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, getWidth(), getHeight());
 
-            Timer gameOverTimer = getGameOverTimer();
 
-            Image gameOver = imageInstance.getGameOver();
-            g.drawImage(gameOver, Map.BOARD_WIDTH / 2 - gameOver.getWidth(null) / 2 + 10,  // Center horizontally
-                    yPos, this);
+            Image gameOverImage = imageInstance.getGameOver();
 
+            int xPos = getWidth() / 2 - gameOverImage.getWidth(null) / 2;
+            int yPos = getHeight() / 2 - gameOverImage.getHeight(null) / 2;
 
-            if (yPos == stopYPos) {
-                gameOverTimer.stop();
-                Timer sorceBoardTimer = new Timer(3000, e -> loadScoreBoard(theView));
-                sorceBoardTimer.setRepeats(false);
-                sorceBoardTimer.start();
-            }
+            g.drawImage(gameOverImage, xPos, yPos, this);
+
+            Timer sorceBoardTimer = new Timer(3000, e -> loadScoreBoard(theView));
+            sorceBoardTimer.setRepeats(false);
+            sorceBoardTimer.start();
         }
     }
 
-    private Timer getGameOverTimer() {
-        gameOverTimer = new Timer(80, e -> {
-            yPos += direction;
-            if (yPos == stopYPos) {
-                direction = 0;
-            } else if (yPos > getHeight()) {
-                yPos = getHeight();
-            } else if (yPos < 0) {
-                yPos = 0;
-                direction *= -1;
-            }
-            repaint();
-        });
-        gameOverTimer.setRepeats(true);
-        gameOverTimer.setCoalesce(true);
-        gameOverTimer.start();
-        return gameOverTimer;
-    }
-
-    /**
-     * Load the score board to the game board
-     *
-     * @param theView GameView that represents the frame of the game
-     */
     private void loadScoreBoard(GameView theView) {
         theView.getGamePanel().removeAll();
-        ScoreBoard scoreBoard = new ScoreBoard(theView, this, isTwoPlayerMode);
+        ScoreBoard scoreBoard = new ScoreBoard(theView, this);
         scoreBoard.setBackground(Color.BLACK);
         theView.getGamePanel().add(scoreBoard);
         scoreBoard.requestFocusInWindow();
@@ -573,9 +466,6 @@ public class Board extends JPanel implements ActionListener {
         theView.setVisible(true);
     }
 
-    /**
-     * Clear the initialized variables on the board.
-     */
     private void clearBoard() {
         animations.clear();
         blocks.clear();
@@ -589,10 +479,6 @@ public class Board extends JPanel implements ActionListener {
         loadCollisionUtility(blocks, animations);
     }
 
-    /**
-     * Tank key adapter. Override the methods in KeyAdapter to add events
-     * handlers for the tanks
-     */
     private class TAdapter extends KeyAdapter {
         @Override
         public void keyReleased(KeyEvent e) {

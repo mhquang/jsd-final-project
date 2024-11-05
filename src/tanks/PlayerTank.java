@@ -6,19 +6,6 @@ import src.utils.SoundUtility;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
-/**
- * Tank extends Sprite The Tank represents the player in the game. The tank has
- * an array of bullets and is capable of moving and firing bullets depending on
- * key events (arrow keys for movement and space bar for firing bullets) in four
- * different directions. The tank also can be upgraded in several ways
- * increasing the firing speed movement speed and the ability to break steel
- * blocks
- *
- * @param int x represents the starting x location in pixels
- * @param int y represents the starting y location in pixels
- * @param int lives is the lives which the tank posses
- * @author Adrian Berg
- */
 public class PlayerTank extends Tank {
 
     private final int initialX;

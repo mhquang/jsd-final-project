@@ -1,13 +1,5 @@
 package src.animation;
 
-/**
- * Explosion extends Animation. This is the explosion used for bullets and
- * various types of blocks.
- *
- * @param int x represents the starting x location in pixels
- * @param int y represents the starting y location in pixels
- * @author Adrian Berg
- */
 public class Explosion extends Animation {
 
     public Explosion(int x, int y) {

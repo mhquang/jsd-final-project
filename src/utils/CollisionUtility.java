@@ -1,55 +1,34 @@
 package src.utils;
 
 import src.BlockType;
-import src.screens.Board;
 import src.animation.*;
 import src.environments.Base;
 import src.environments.Block;
+import src.screens.Board;
 import src.tanks.NPCTank;
 import src.tanks.PlayerTank;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-/**
- * Utility class for collision detection and handling
- *
- * @author Adrian Berg
- */
 public class CollisionUtility {
-    // Instance variable that indicated the x, y coordinates of the powerUp
     public static int powerUpX = 0;
     public static int powerUpY = 0;
-    private static ArrayList<Block> blocks;
-    private static ArrayList<Animation> explosions;
+    private static CopyOnWriteArrayList<Block> blocks;
+    private static CopyOnWriteArrayList<Animation> explosions;
     private static int[] enemyTankNum = {0, 0, 0, 0};
     private static final SoundUtility soundUtility = SoundUtility.getInstance();
 
-    /**
-     * Load blocks and explosion animation from the input array list
-     *
-     * @param inblocks    input blocks
-     * @param inexplosion
-     */
-    public static void loadCollisionUtility(ArrayList<Block> inblocks,
-                                            ArrayList<Animation> inexplosion) {
+    public static void loadCollisionUtility(CopyOnWriteArrayList<Block> inblocks,
+                                            CopyOnWriteArrayList<Animation> inexplosion) {
         blocks = inblocks;
         explosions = inexplosion;
     }
 
-    /**
-     * Reset the score of the game after game over.
-     */
     public static void resetScore() {
         enemyTankNum = new int[]{0, 0, 0, 0};
     }
 
-    /**
-     * Helper method for collision between bullets and blocks
-     *
-     * @param bullet
-     * @param block
-     */
     public static void CollisionBulletsBlocksHelper(Bullet bullet, Block block) {
         BlockType type = BlockType.getTypeFromInt(block.getType());
         if (type.equals(BlockType.BRICK)) {
@@ -85,12 +64,6 @@ public class CollisionUtility {
         }
     }
 
-    /**
-     * Check collision between tank and blocks
-     *
-     * @param r3 Rectangle
-     * @return a boolean represents if there is a collision
-     */
     public static boolean checkCollisionTankBlocks(Rectangle r3) {
         for (Block block : blocks) {
             Rectangle r2 = block.getBounds();
@@ -104,14 +77,8 @@ public class CollisionUtility {
         return false;
     }
 
-    /**
-     * Check collision between bullets and blocks
-     *
-     * @param bullets array list for bullets
-     * @param blocks  array list for blocks
-     */
-    public static void checkCollisionBulletsBlocks(ArrayList<Bullet> bullets,
-                                                   ArrayList<Block> blocks) {
+    public static void checkCollisionBulletsBlocks(CopyOnWriteArrayList<Bullet> bullets,
+                                                   CopyOnWriteArrayList<Block> blocks) {
 
         for (Bullet b : bullets) {
             Rectangle r1 = b.getBounds();
@@ -127,13 +94,7 @@ public class CollisionUtility {
         }
     }
 
-    /**
-     * Check collision between bullets and the player tank
-     *
-     * @param bullets    array list for bullets
-     * @param playerTank
-     */
-    public static void checkCollisionBulletsTank(ArrayList<Bullet> bullets,
+    public static void checkCollisionBulletsTank(CopyOnWriteArrayList<Bullet> bullets,
                                                  PlayerTank playerTank) {
         Rectangle r2 = playerTank.getBounds();
         for (Bullet b : bullets) {
@@ -152,20 +113,12 @@ public class CollisionUtility {
         }
     }
 
-    /**
-     * Check collision between bullets and enemy tanks
-     *
-     * @param bullets  array list for bullets
-     * @param NPCTanks array list for Tank AIs
-     */
-    public static void checkCollisionBulletsTankAI(ArrayList<Bullet> bullets,
-                                                   ArrayList<NPCTank> NPCTanks) {
-        for (int x = 0; x < bullets.size(); x++) {
-            Bullet b = bullets.get(x);
+    public static void checkCollisionBulletsTankAI(CopyOnWriteArrayList<Bullet> bullets,
+                                                   CopyOnWriteArrayList<NPCTank> NPCTanks) {
+        for (Bullet b : bullets) {
             Rectangle r1 = b.getBounds();
 
-            for (int i = 0; i < NPCTanks.size(); i++) {
-                NPCTank NPCTank = NPCTanks.get(i);
+            for (src.tanks.NPCTank NPCTank : NPCTanks) {
                 Rectangle r2 = NPCTank.getBounds();
 
                 if (r1.intersects(r2) && !b.isEnemy) {
@@ -188,11 +141,6 @@ public class CollisionUtility {
         }
     }
 
-    /**
-     * Increment number of the tankAI being destroyed
-     *
-     * @param NPCTank a given tankAI
-     */
     public static void incrementNum(NPCTank NPCTank) {
         String type = NPCTank.getType();
         switch (type) {
@@ -213,22 +161,10 @@ public class CollisionUtility {
         }
     }
 
-    /**
-     * Get the array that stores the number of each enemy tank being destroyed
-     *
-     * @return enemyTankNum the array that stores the number of each enemy tank
-     * being destroyed
-     */
     public static int[] getEnemyTankNum() {
         return enemyTankNum;
     }
 
-    /**
-     * Reset the position of the tank
-     *
-     * @param atank
-     * @param type
-     */
     public static void resetTankPosition(PlayerTank atank, int type) {
         atank.setX(atank.getInitialX());
         atank.setY(atank.getInitialY());
@@ -241,13 +177,7 @@ public class CollisionUtility {
         }
     }
 
-    /**
-     * Check collision between the player and enemy tanks
-     *
-     * @param NPCTanks array list for Tank AIs
-     * @param atank    the player tank
-     */
-    public static void checkCollisionTankTankAI(ArrayList<NPCTank> NPCTanks,
+    public static void checkCollisionTankTankAI(CopyOnWriteArrayList<NPCTank> NPCTanks,
                                                 PlayerTank atank) {
         Rectangle r1 = atank.getBounds();
         for (int i = 0; i < NPCTanks.size(); i++) {

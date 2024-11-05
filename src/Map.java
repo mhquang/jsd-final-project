@@ -5,35 +5,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * A class for map in the game
- *
- * @author Tongyu
- */
 public class Map {
-
-    /**
-     * Hard coded the size of the board
-     */
     public static final int BOARD_WIDTH = 16 * 33;
     public static final int BOARD_HEIGHT = 16 * 28;
     private static final int ROW_SHIFT = 2;
     private static final int COL_SHIFT = 4;
     private static final int BASE_POS = 16;
 
-    /**
-     * Return the map in 2D array
-     *
-     * @param stage
-     * @return 2D array that represents the map
-     */
     public static int[][] getMap(int stage) {
         return createNewStageMap(stage);
     }
 
-    /**
-     * Hard-coded and initialize 2D array as map
-     */
     public static final int[][] level0 = {
             {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
             {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
@@ -66,12 +48,6 @@ public class Map {
             {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
             {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6}};
 
-    /**
-     * Read map from files
-     *
-     * @param fileName
-     * @return an array list that represents a map
-     */
     public static ArrayList<ArrayList<Integer>> readFromFile(String fileName) {
         ArrayList<ArrayList<Integer>> tempMap = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
@@ -110,27 +86,12 @@ public class Map {
         return tempMap;
     }
 
-    /**
-     * Convert arrayList to array for further operation. This method is based on
-     * codes on StackOverflow
-     *
-     * @param arrayList
-     * @return an array converted from arrayList
-     * @see <a href="http://stackoverflow.com/questions/10043209/convert-arraylist-into-2d-array-containing-varying-lengths-of-arrays/34744176">
-     * http://stackoverflow.com/questions/10043209/convert-arraylist-into-2d-array-containing-varying-lengths-of-arrays/34744176</a>
-     */
     public static int[][] arrayListToArray(ArrayList<ArrayList<Integer>> arrayList) {
         int[][] intArray = arrayList.stream().map(u -> u.stream().mapToInt(
                 i -> i).toArray()).toArray(int[][]::new);
         return intArray;
     }
 
-    /**
-     * Create map of the new stage given the stage number
-     *
-     * @param stage current stage number
-     * @return a 2D array that represents the map of the given stage
-     */
     public static int[][] createNewStageMap(int stage) {
         int[][] newLevel = level0;
         ArrayList<ArrayList<Integer>> levelReadFromFile = readFromFile(

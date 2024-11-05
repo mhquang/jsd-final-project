@@ -1,12 +1,5 @@
 package src.environments;
 
-/**
- * Steel is a Block with type 2 and health 1
- *
- * @param int x represents the starting x location in pixels
- * @param int y represents the starting y location in pixels
- * @author Adrian Berg
- */
 public class Steel extends Block {
 
     public Steel(int x, int y) {

@@ -17,11 +17,8 @@ public class GameMain {
                     java.util.logging.Level.SEVERE, null, ex);
         }
 
-        /* Create and display the form */
         EventQueue.invokeLater(() -> {
             GameView theView = new GameView();
-//            Menu menu = new Menu(theView, Map.BOARD_HEIGHT);
-//            theView.getGamePanel().add(menu);
             theView.setVisible(true);
         });
     }

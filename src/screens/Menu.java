@@ -16,6 +16,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
     private static Menu instance;
     private Image title, tank;
     private final GameView theView;
+    private Board board;
     private int yPos;
     private int direction = -1;
     private final int stopYPos = 50;
@@ -25,6 +26,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
     private int selectedItem = 0;  // Tracks which menu item is selected
     private final String[] menuItems = {"1 PLAYER", "2 PLAYERS", "SETTING", "HELP"}; // Menu items
     private boolean isBackFromScoreBoard;
+    private boolean isTwoPlayerMode;
 
     public Menu(GameView theView, int yPos) {
         this.theView = theView;
@@ -43,15 +45,6 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
             instance = new Menu(theView, yPos);
         }
         return instance;
-    }
-
-    /**
-     * Return if the game is showing the menu
-     *
-     * @return a boolean
-     */
-    public static boolean getMenuStatus() {
-        return menuStatus;
     }
 
     public void setMenuStatus(boolean menuStatus) {
@@ -104,26 +97,20 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
         g.setFont(font);
         g.setColor(Color.WHITE);
 
-        // Draw the title image centered
         g.drawImage(title,
                 theView.getWidth() / 2 - title.getWidth(null) / 2 - 10,  // Center horizontally
                 yPos, this);
 
-        // Draw menu when yPos reaches stopYPos
         if (yPos == stopYPos) {
-            // Calculate initial yPos for the first menu item
             int initialYPos = yPos + title.getHeight(null) + 30;
             int spacing = 35;
 
-            // Draw the menu items centered
-            // Vertical space between menu items
             for (int i = 0; i < menuItems.length; i++) {
                 int xPosition = (theView.getWidth() - g.getFontMetrics().stringWidth(menuItems[i])) / 2;
                 g.drawString(menuItems[i], xPosition, initialYPos + i * spacing);
             }
 
-            // Draw the tank above the selected menu item
-            int tankYPos = initialYPos + selectedItem * spacing - 20; // Adjust tank's position
+            int tankYPos = initialYPos + selectedItem * spacing - 20;
             g.drawImage(tank, theView.getWidth() / 2 - tank.getWidth(null) / 2 - 100, tankYPos, this);
 
             g.drawString("PRESS ENTER",
@@ -158,10 +145,12 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_SPACE) {
             if (menuStatus) {
                 if (selectedItem == 0) {
-                    loadBoard(false);
+                    isTwoPlayerMode = false;
+                    loadBoard();
                 } else if (selectedItem == 1) {
                     // 2 players mode
-                    loadBoard(true);
+                    isTwoPlayerMode = true;
+                    loadBoard();
                 } else if (selectedItem == 2) {
                     showSetting();
                 } else if (selectedItem == 3) {
@@ -176,72 +165,51 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
     public void keyReleased(KeyEvent e) {
     }
 
-    /**
-     * Load the board to the game panel on the JFrame of the game.
-     */
-    private void loadBoard(boolean isTwoPlayerMode) {
-        // Change the menu status
+    private void loadBoard() {
         menuStatus = false;
 
-        // Clear previous components
         theView.getGamePanel().removeAll();
+        board = new Board(theView, isTwoPlayerMode);
 
-        // Create and add a new Board panel
-        Board panel = new Board(theView, isTwoPlayerMode);
-        theView.getGamePanel().add(panel);
+        theView.getGamePanel().add(board);
 
-        // Refresh and repaint the panel
-        panel.revalidate();
-        panel.repaint();
+        board.revalidate();
+        board.repaint();
 
-        // Request focus on the new Board panel
-        panel.requestFocusInWindow();
+        board.requestFocusInWindow();
 
-        // Set the main view visible
         theView.setVisible(true);
     }
 
     private void showHelp() {
-        // Change the menu status
         menuStatus = false;
 
-        // Clear previous components
         theView.getGamePanel().removeAll();
 
-        // Create and add a new Board panel
         Help helpPanel = Help.getInstance(theView);
         theView.getGamePanel().add(helpPanel);
 
-        // Refresh and repaint the panel
         helpPanel.revalidate();
         helpPanel.repaint();
 
-        // Request focus on the new Board panel
         helpPanel.requestFocusInWindow();
 
-        // Set the main view visible
         theView.setVisible(true);
     }
 
     private void showSetting() {
-        // Change the menu status
         menuStatus = false;
 
-        // Clear previous components
         theView.getGamePanel().removeAll();
 
-        // Create and add a new Board panel
         Setting settingPanel = Setting.getInstance(theView);
         theView.getGamePanel().add(settingPanel);
 
-        // Refresh and repaint the panel
         settingPanel.revalidate();
         settingPanel.repaint();
 
-        // Request focus on the new Board panel
         settingPanel.requestFocusInWindow();
 
-        // Set the main view visible
         theView.setVisible(true);
     }
 

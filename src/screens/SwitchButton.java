@@ -2,14 +2,10 @@ package src.screens;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-
 public class SwitchButton extends Component {
-    private final Timer timer;
     private float location;
     private boolean selected = true;
     private boolean mouseOver;
@@ -20,39 +16,14 @@ public class SwitchButton extends Component {
         setForeground(Color.WHITE);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
         location = -1;
-        timer = new Timer(0, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int endLocation = getWidth() - getHeight() + 2;
-                if (selected) {
-                    if (location < endLocation) {
-                        location += speed;
-                        repaint();
-                    } else {
-                        timer.stop();
-                        location = endLocation;
-                        repaint();
-                    }
-                } else {
-                    int startLocation = 2;
-                    if (location > startLocation) {
-                        location -= speed;
-                        repaint();
-                    } else {
-                        timer.stop();
-                        location = startLocation;
-                        repaint();
-                    }
-                }
-            }
-        });
+
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     if (mouseOver) {
                         selected = !selected;
-                        timer.start();
+                        new Thread(() -> animateSwitch()).start();
                     }
                 }
             }
@@ -110,5 +81,26 @@ public class SwitchButton extends Component {
             alpha = 1;
         }
         return alpha;
+    }
+
+    private void animateSwitch() {
+        int endLocation = getWidth() - getHeight() + 2;
+        int startLocation = 2;
+
+        while (selected ? location < endLocation : location > startLocation) {
+            location += selected ? speed : -speed;
+            location = Math.min(Math.max(location, startLocation), endLocation); // Ensure bounds
+
+            repaint();
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        location = selected ? endLocation : startLocation;
+        repaint();
     }
 }

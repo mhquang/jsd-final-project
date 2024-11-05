@@ -2,14 +2,6 @@ package src.powerups;
 
 import src.Sprite;
 
-/**
- * PowerUp class has an updateAnimation method which is used to make powerUps
- * flash before being removed
- *
- * @param int x represents the starting x location in pixels
- * @param int y represents the starting y location in pixels
- * @author Adrian Berg
- */
 public class PowerUp extends Sprite {
     long loadTime;
     private int type;

@@ -1,6 +1,7 @@
 package src.utils;
 
 import javax.sound.sampled.*;
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -42,14 +43,6 @@ public class SoundUtility {
         }
     }
 
-    private Clip loadClip(String filePath) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
-        File soundFile = new File(filePath);
-        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
-        Clip clip = AudioSystem.getClip();
-        clip.open(audioInputStream);
-        clip.setFramePosition(clip.getFrameLength());
-        return clip;
-    }
 
     public void mute() {
         soundOn = false;
@@ -57,12 +50,6 @@ public class SoundUtility {
 
     public void unmute() {
         soundOn = true;
-    }
-
-    private void playClip(Clip clip) {
-        if (initialized && soundOn && clip != null) {
-            clip.loop(1);
-        }
     }
 
     public void bulletHitBrick() {
@@ -106,6 +93,39 @@ public class SoundUtility {
     }
 
     public void statistics() {
-        playClip(statisticsSE);
+        playClipWithPause(statisticsSE);
     }
+
+    private Clip loadClip(String filePath) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+        File soundFile = new File(filePath);
+        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+        Clip clip = AudioSystem.getClip();
+        clip.open(audioInputStream);
+        clip.setFramePosition(clip.getFrameLength());
+        return clip;
+    }
+
+    private void playClip(Clip clip) {
+        if (initialized && soundOn && clip != null) {
+            clip.loop(1);
+        }
+    }
+
+    private void playClipWithPause(Clip clip) {
+        if (initialized && soundOn && clip != null) {
+            Timer playTimer = new Timer((int) (clip.getMicrosecondLength() / 1000 + 2), e -> {
+                clip.setFramePosition(0);
+                clip.start();
+            });
+
+            playTimer.setRepeats(true);
+            playTimer.start();
+
+            new Timer(5000, e -> {
+                playTimer.stop();
+                clip.stop();
+            }).start();
+        }
+    }
+
 }

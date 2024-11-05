@@ -81,6 +81,7 @@ public class Board extends JPanel implements ActionListener {
         super.paintComponent(g);
         drawObjects(g);
         drawEdge(g);
+        if (pause) drawPauseText(g);
         endGame(g);
         Toolkit.getDefaultToolkit().sync();
     }
@@ -150,7 +151,9 @@ public class Board extends JPanel implements ActionListener {
 
     private void initializeTimer() {
         stopTimers();
-        timer = new Timer(DELAY, this);
+        if (timer == null) {
+            timer = new Timer(DELAY, this);
+        }
         timer.start();
     }
 
@@ -348,6 +351,15 @@ public class Board extends JPanel implements ActionListener {
                     break;
             }
         }
+    }
+
+    private void drawPauseText(Graphics g) {
+        String pauseText = "PAUSE";
+        Font font = fontUtility.getPrstart().deriveFont(Font.BOLD, 30);
+        g.setFont(font);
+        g.setColor(Color.WHITE);
+
+        g.drawString(pauseText, getWidth() / 2 - g.getFontMetrics().stringWidth(pauseText) / 2, getHeight() / 2);
     }
 
     /**
@@ -601,6 +613,7 @@ public class Board extends JPanel implements ActionListener {
                     soundUtility.pause();
                 }
                 pause = !pause;
+                repaint();
             }
         }
     }

@@ -47,15 +47,15 @@ public class Setting extends JPanel implements ActionListener, KeyListener {
         String title = "SETTINGS";
         g.drawString(title, gameView.getWidth() / 2 - g.getFontMetrics().stringWidth(title) / 2, 50);
 
-        Font instructionFont = fontUtility.getArialbd().deriveFont(24f); // Smaller font size for instructions
+        Font instructionFont = fontUtility.getArialbd().deriveFont(26f); // Smaller font size for instructions
         g.setFont(instructionFont);
 
         String sound = "Sound";
         String on = "ON";
         String off = "OFF";
         g.drawString(sound, gameView.getWidth() / 2 - g.getFontMetrics().stringWidth(sound) / 2, y);
-        g.drawString(on, gameView.getWidth() / 2 + 70, y + 45);
-        g.drawString(off, gameView.getWidth() / 2 - g.getFontMetrics().stringWidth(off) - 70, y + 45);
+        g.drawString(on, gameView.getWidth() / 2 + 70, y + 60);
+        g.drawString(off, gameView.getWidth() / 2 - g.getFontMetrics().stringWidth(off) - 70, y + 60);
 
         Font backFont = fontUtility.getArialbd().deriveFont(Font.ITALIC, 15);
         g.setFont(backFont);
@@ -64,7 +64,7 @@ public class Setting extends JPanel implements ActionListener, KeyListener {
         String backMsg = "PRESS ESC TO RETURN TO MENU";
 
         // Draw back message centered at the bottom
-        g.drawString(backMsg, gameView.getWidth() / 2 - g.getFontMetrics().stringWidth(backMsg) / 2 + 10,
+        g.drawString(backMsg, gameView.getWidth() / 2 - g.getFontMetrics().stringWidth(backMsg) / 2,
                 Map.BOARD_HEIGHT * 4 / 5 + 90);
     }
 
@@ -99,7 +99,7 @@ public class Setting extends JPanel implements ActionListener, KeyListener {
 
     private SwitchButton getSwitchButton() {
         SwitchButton soundSwitchButton = new SwitchButton();
-        soundSwitchButton.setBounds(gameView.getWidth() / 2 - 50, y + 10, 100, 50);
+        soundSwitchButton.setBounds(gameView.getWidth() / 2 - 50, y + 25, 100, 50);
         soundSwitchButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {

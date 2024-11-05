@@ -20,7 +20,7 @@ public class SwitchButton extends Component {
         setForeground(Color.WHITE);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
         location = -1;
-        timer = new Timer(1, new ActionListener() {
+        timer = new Timer(0, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int endLocation = getWidth() - getHeight() + 2;

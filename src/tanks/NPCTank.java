@@ -206,7 +206,7 @@ public class NPCTank extends Tank {
     }
 
     private void imageSetUp() {
-        String basePath = "image/npc_tanks/";
+        String basePath = "assets/image/npc_tanks/";
         switch (this.type) {
             case "basic":
                 this.imageUp = basePath + "tank_basic_up.png";

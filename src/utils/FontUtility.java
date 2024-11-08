@@ -14,8 +14,8 @@ public class FontUtility {
     private final Font prstart, arialbd;
 
     private FontUtility() {
-        prstart = loadFont("prstart.ttf");
-        arialbd = loadFont("arialbd.ttf");
+        prstart = loadFont("assets/fonts/prstart.ttf");
+        arialbd = loadFont("assets/fonts/arialbd.ttf");
     }
 
     public static FontUtility getInstance() {

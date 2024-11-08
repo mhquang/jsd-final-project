@@ -18,19 +18,19 @@ public class ImageUtility {
     }
 
     private ImageUtility() {
-        lives = loadImage("image/lives.png");
-        flagIcon = loadImage("image/flag.png");
-        enemyIcon = loadImage("image/enemy.png");
-        arrow = loadImage("image/arrow.png");
-        tankBasic = loadImage("image/npc_tanks/tank_basic_up.png");
-        tankFast = loadImage("image/npc_tanks/tank_fast_up.png");
-        tankPower = loadImage("image/npc_tanks/tank_power_up.png");
-        tankArmor = loadImage("image/npc_tanks/tank_armor_up.png");
-        background = loadImage("image/title.png");
-        tank = loadImage("image/player_tank/playerTank_right.png");
-        player1TankIcon = loadImage("image/player_tank/playerTank.png");
-        player2TankIcon = loadImage("image/player_tank/player2Tank.png");
-        gameOver = loadImage("image/game_over.png");
+        lives = loadImage("assets/image/lives.png");
+        flagIcon = loadImage("assets/image/flag.png");
+        enemyIcon = loadImage("assets/image/enemy.png");
+        arrow = loadImage("assets/image/arrow.png");
+        tankBasic = loadImage("assets/image/npc_tanks/tank_basic_up.png");
+        tankFast = loadImage("assets/image/npc_tanks/tank_fast_up.png");
+        tankPower = loadImage("assets/image/npc_tanks/tank_power_up.png");
+        tankArmor = loadImage("assets/image/npc_tanks/tank_armor_up.png");
+        background = loadImage("assets/image/title.png");
+        tank = loadImage("assets/image/player_tank/playerTank_right.png");
+        player1TankIcon = loadImage("assets/image/player_tank/playerTank.png");
+        player2TankIcon = loadImage("assets/image/player_tank/player2Tank.png");
+        gameOver = loadImage("assets/image/game_over.png");
     }
 
     private Image loadImage(String imageAddress) {

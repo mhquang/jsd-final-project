@@ -11,7 +11,7 @@ public class TankShield extends Animation {
     public TankShield(PlayerTank atank, int type) {
         super(atank.getX(), atank.getY());
         playerTank = atank;
-        loadImage("image/animations/shield_1.png");
+        loadImage("assets/image/animations/shield_1.png");
         getImageDimensions();
         this.type = type;
     }
@@ -28,11 +28,11 @@ public class TankShield extends Animation {
         super.setY(playerTank.getY());
         long timeDifference = (System.currentTimeMillis() - initialTime);
         if (timeDifference % 10 == 0 && !flip) {
-            loadImage("image/animations/shield_1.png");
+            loadImage("assets/image/animations/shield_1.png");
             getImageDimensions();
             flip = true;
         } else if (timeDifference % 10 == 0 && flip) {
-            loadImage("image/animations/shield_2.png");
+            loadImage("assets/image/animations/shield_2.png");
             getImageDimensions();
             flip = false;
         }

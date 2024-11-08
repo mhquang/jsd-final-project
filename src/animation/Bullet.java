@@ -15,16 +15,16 @@ public class Bullet extends Sprite {
         super(x, y);
         this.direction = direction;
         if (direction == 0) {
-            loadImage("image/bullets/bullet_up.png");
+            loadImage("assets/image/bullets/bullet_up.png");
         }
         if (direction == 1) {
-            loadImage("image/bullets/bullet_right.png");
+            loadImage("assets/image/bullets/bullet_right.png");
         }
         if (direction == 2) {
-            loadImage("image/bullets/bullet_down.png");
+            loadImage("assets/image/bullets/bullet_down.png");
         }
         if (direction == 3) {
-            loadImage("image/bullets/bullet_left.png");
+            loadImage("assets/image/bullets/bullet_left.png");
         }
         isEnemy = Enemy;
         getImageDimensions();

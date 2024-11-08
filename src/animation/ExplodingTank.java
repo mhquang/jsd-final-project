@@ -6,26 +6,26 @@ public class ExplodingTank extends Explosion {
 
     public ExplodingTank(int x, int y) {
         super(x - 8, y - 8);
-        loadImage("image/animations/big_explosion_1.png");
+        loadImage("assets/image/animations/big_explosion_1.png");
         getImageDimensions();
     }
 
     @Override
     public void updateAnimation() {
         if ((System.currentTimeMillis() - initialTime) > 125) {
-            loadImage("image/animations/big_explosion_2.png");
+            loadImage("assets/image/animations/big_explosion_2.png");
             getImageDimensions();
         }
         if ((System.currentTimeMillis() - initialTime > 500)) {
-            loadImage("image/animations/big_explosion_3.png");
+            loadImage("assets/image/animations/big_explosion_3.png");
             getImageDimensions();
         }
         if ((System.currentTimeMillis() - initialTime > 700)) {
-            loadImage("image/animations/big_explosion_4.png");
+            loadImage("assets/image/animations/big_explosion_4.png");
             getImageDimensions();
         }
         if ((System.currentTimeMillis() - initialTime > 900)) {
-            loadImage("image/animations/big_explosion_5.png");
+            loadImage("assets/image/animations/big_explosion_5.png");
             getImageDimensions();
         }
         if ((System.currentTimeMillis() - initialTime > 1100)) {

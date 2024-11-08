@@ -26,17 +26,17 @@ public class SoundUtility {
 
     private void initialize() {
         try {
-            bulletBrickSE = loadClip("sound/bullet_hit_2.wav");
-            bulletTankSE = loadClip("sound/bullet_hit_1.wav");
-            fireSE = loadClip("sound/bullet_shot.wav");
-            explosion1SE = loadClip("sound/explosion_1.wav");
-            explosion2SE = loadClip("sound/explosion_2.wav");
-            startStageSE = loadClip("sound/stage_start.wav");
-            pauseSE = loadClip("sound/pause.wav");
-            powerupAppearSE = loadClip("sound/powerup_appear.wav");
-            powerupPickSE = loadClip("sound/powerup_pick.wav");
-            gameoverSE = loadClip("sound/game_over.wav");
-            statisticsSE = loadClip("sound/statistics_1.wav");
+            bulletBrickSE = loadClip("assets/sound/bullet_hit_2.wav");
+            bulletTankSE = loadClip("assets//bullet_hit_1.wav");
+            fireSE = loadClip("assets/sound/bullet_shot.wav");
+            explosion1SE = loadClip("assets/sound/explosion_1.wav");
+            explosion2SE = loadClip("assets/sound/explosion_2.wav");
+            startStageSE = loadClip("assets/sound/stage_start.wav");
+            pauseSE = loadClip("assets/sound/pause.wav");
+            powerupAppearSE = loadClip("assets/sound/powerup_appear.wav");
+            powerupPickSE = loadClip("assets/sound/powerup_pick.wav");
+            gameoverSE = loadClip("assets/sound/game_over.wav");
+            statisticsSE = loadClip("assets/sound/statistics_1.wav");
             initialized = true;
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
             Logger.getLogger(SoundUtility.class.getName()).log(Level.SEVERE, null, ex);

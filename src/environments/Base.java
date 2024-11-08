@@ -5,7 +5,7 @@ public class Base extends Block {
 
     public Base(int x, int y) {
         super(x, y);
-        loadImage("image/environments/base.png");
+        loadImage("assets/image/environments/base.png");
         getImageDimensions();
         setHealth(1);
         setType(3);
@@ -14,7 +14,7 @@ public class Base extends Block {
 
     public void updateAnimation() {
         if (gameOver) {
-            loadImage("image/environments/base_destroyed.png");
+            loadImage("assets/image/environments/base_destroyed.png");
             getImageDimensions();
         }
     }

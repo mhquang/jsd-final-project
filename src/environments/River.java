@@ -10,11 +10,11 @@ public class River extends Block {
         if ((System.currentTimeMillis() - lastImage) > 500) {
 
             if (lastLoad) {
-                loadImage("image/environments/water_1.png");
+                loadImage("assets/image/environments/water_1.png");
                 lastImage = System.currentTimeMillis();
                 lastLoad = false;
             } else {
-                loadImage("image/environments/water_2.png");
+                loadImage("assets/image/environments/water_2.png");
                 lastImage = System.currentTimeMillis();
 
                 lastLoad = true;

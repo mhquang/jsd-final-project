@@ -27,7 +27,7 @@ public class SoundUtility {
     private void initialize() {
         try {
             bulletBrickSE = loadClip("assets/sound/bullet_hit_2.wav");
-            bulletTankSE = loadClip("assets//bullet_hit_1.wav");
+            bulletTankSE = loadClip("assets/sound/bullet_hit_1.wav");
             fireSE = loadClip("assets/sound/bullet_shot.wav");
             explosion1SE = loadClip("assets/sound/explosion_1.wav");
             explosion2SE = loadClip("assets/sound/explosion_2.wav");

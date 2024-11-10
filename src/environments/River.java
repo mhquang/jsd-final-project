@@ -25,7 +25,7 @@ public class River extends Block {
 
     public River(int x, int y) {
         super(x, y);
-        loadImage("image/environments/water_1.png");
+        loadImage("assets/image/environments/water_1.png");
         getImageDimensions();
         setHealth(1);
         setType(4);
